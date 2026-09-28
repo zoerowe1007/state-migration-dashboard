@@ -4,15 +4,21 @@ Where people move between U.S. states, and how that compares to the cost of
 living (home values) where they're moving from and to. Built for a Financial
 Data Analytics course project.
 
-Live site: TBD (added once published)
+Live site: https://zoerowe1007.github.io/state-migration-dashboard/
 
 ## Files
 
 - `index.html` — the report page: findings, headline numbers, and charts.
 - `dashboard.html` — the interactive dashboard: filter the data live in the browser.
-- `assets/` — shared CSS, JS, and chart code used by both pages.
+- `assets/style.css` — shared nav, layout, and component styles for both pages.
+- `assets/report.js` — fetches `assets/data/report_data.json` and renders the
+  report page's headline numbers and Chart.js charts.
+- `assets/data/report_data.json` — every number and chart series on the report
+  page, built by `data/generate_report_data.py` so it always matches the data.
 - `data/prepare_data.py` — rebuilds `data/processed/state_migration_cost_panel.csv`
   from the raw files in `data/raw/`. Run with `uv run python data/prepare_data.py`.
+- `data/generate_report_data.py` — rebuilds `assets/data/report_data.json` from
+  the processed panel. Run with `uv run python data/generate_report_data.py`.
 - `data/processed/state_migration_cost_panel.csv` — the final panel dataset used
   by both pages.
 - `data/raw/census_migration/` — raw Census Bureau state-to-state migration
