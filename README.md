@@ -11,6 +11,10 @@ Live site: https://zoerowe1007.github.io/state-migration-dashboard/
 - `index.html` — the report page: findings, headline numbers, and charts.
 - `dashboard.html` — the interactive dashboard: filter the data live in the browser.
 - `assets/style.css` — shared nav, layout, and component styles for both pages.
+- `assets/common.js` — shared behavior used by both pages: the dark/light
+  theme toggle (persisted per-browser via `localStorage`), the report page's
+  scroll-spy table of contents and reveal-on-scroll animations, and the
+  animated count-up used for every headline/summary number.
 - `assets/report.js` — fetches `assets/data/report_data.json` and renders the
   report page's headline numbers and Chart.js charts.
 - `assets/dashboard.js` — loads `data/processed/state_migration_cost_panel.csv`

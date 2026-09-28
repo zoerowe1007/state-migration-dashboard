@@ -41,11 +41,6 @@
     });
   }
 
-  function setText(id, text) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = text;
-  }
-
   fetch("assets/data/report_data.json")
     .then((r) => r.json())
     .then((data) => {
@@ -64,10 +59,21 @@
     });
 
   function renderHeadline(h) {
-    setText("stat-total-movers", fmt.format(h.total_movers_latest));
-    setText("stat-top-gainer", `${h.top_gainer_state} +${fmt.format(h.top_gainer_value)}`);
-    setText("stat-cheaper-share", `${h.cheaper_share_latest_pct}%`);
-    setText("stat-home-value", `${fmtMoney.format(h.national_median_home_value_latest)}`);
+    Common.countUp(document.getElementById("stat-total-movers"), h.total_movers_latest, {
+      format: (v) => fmt.format(Math.round(v)),
+    });
+    const gainerEl = document.getElementById("stat-top-gainer");
+    if (gainerEl) {
+      Common.countUp(gainerEl, h.top_gainer_value, {
+        format: (v) => `${h.top_gainer_state} +${fmt.format(Math.round(v))}`,
+      });
+    }
+    Common.countUp(document.getElementById("stat-cheaper-share"), h.cheaper_share_latest_pct, {
+      format: (v) => `${v.toFixed(1)}%`,
+    });
+    Common.countUp(document.getElementById("stat-home-value"), h.national_median_home_value_latest, {
+      format: (v) => fmtMoney.format(Math.round(v)),
+    });
     document.querySelectorAll("[data-year]").forEach((el) => (el.textContent = h.latest_year));
   }
 

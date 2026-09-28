@@ -23,6 +23,12 @@
     current_region: "Region",
     year: "Year",
   };
+  const FILTER_LABELS = {
+    year: "Year",
+    current_state: "Destination",
+    prior_state: "Origin",
+    current_region: "Region",
+  };
 
   const state = {
     rows: [],
@@ -159,10 +165,50 @@
     const medianZhvi = computeMeasure(filtered, "median_zhvi");
     const cheaperRate = computeMeasure(filtered, "cheaper_rate");
 
-    setText("summary-total-movers", fmt.format(total));
-    setText("summary-routes", fmt.format(routes));
-    setText("summary-median-zhvi", medianZhvi == null ? "n/a" : fmtMoney.format(medianZhvi));
-    setText("summary-cheaper-rate", cheaperRate == null ? "n/a" : cheaperRate.toFixed(1) + "%");
+    Common.countUp(document.getElementById("summary-total-movers"), total, { format: (v) => fmt.format(Math.round(v)) });
+    Common.countUp(document.getElementById("summary-routes"), routes, { format: (v) => fmt.format(Math.round(v)) });
+    Common.countUp(document.getElementById("summary-median-zhvi"), medianZhvi, {
+      format: (v) => fmtMoney.format(Math.round(v)),
+      fallback: "n/a",
+    });
+    Common.countUp(document.getElementById("summary-cheaper-rate"), cheaperRate, {
+      format: (v) => v.toFixed(1) + "%",
+      fallback: "n/a",
+    });
+  }
+
+  function setFilter(key, value) {
+    state.filters[key] = value;
+    const idByKey = {
+      year: "filter-year",
+      current_state: "filter-current-state",
+      prior_state: "filter-prior-state",
+      current_region: "filter-region",
+    };
+    const el = document.getElementById(idByKey[key]);
+    if (el) el.value = value;
+    // Deferred: a click on a chart element must not destroy/recreate that
+    // same chart synchronously, inside Chart.js's own event dispatch.
+    setTimeout(update, 0);
+  }
+
+  function renderActiveFilters() {
+    const container = document.getElementById("active-filters");
+    const entries = Object.entries(state.filters).filter(([, v]) => v !== "all");
+    if (!entries.length) {
+      container.innerHTML = "";
+      return;
+    }
+    container.innerHTML = entries
+      .map(
+        ([key, value]) => `<span class="chip" data-key="${key}">${FILTER_LABELS[key]}: ${value}
+          <button type="button" aria-label="Remove ${FILTER_LABELS[key]} filter" data-remove="${key}">&times;</button>
+        </span>`
+      )
+      .join("");
+    container.querySelectorAll("button[data-remove]").forEach((btn) => {
+      btn.addEventListener("click", () => setFilter(btn.dataset.remove, "all"));
+    });
   }
 
   function renderChart1(filtered) {
@@ -192,8 +238,9 @@
           labels,
           datasets: [{
             data: values, borderColor: c("--blue"), backgroundColor: c("--blue") + "1a",
-            fill: true, tension: 0.25, borderWidth: 2, pointRadius: 0,
-            pointHoverRadius: 5, pointHoverBackgroundColor: c("--blue"), pointHoverBorderColor: c("--surface"), pointHoverBorderWidth: 2,
+            fill: true, tension: 0.25, borderWidth: 2, pointRadius: 3, pointHitRadius: 12,
+            pointBackgroundColor: c("--blue"),
+            pointHoverRadius: 6, pointHoverBackgroundColor: c("--blue"), pointHoverBorderColor: c("--surface"), pointHoverBorderWidth: 2,
           }],
         },
         options: buildChartOptions({
@@ -316,6 +363,7 @@
 
   function update() {
     const filtered = applyFilters(state.rows);
+    renderActiveFilters();
     renderSummary(filtered);
     renderChart1(filtered);
     renderChart2(filtered);
@@ -365,6 +413,43 @@
         state.chart1.breakdown = btn.dataset.breakdown;
         renderChart1(applyFilters(state.rows));
       });
+    });
+
+    // Chart.js's own onClick/onHover options proved unreliable across
+    // destroy/recreate cycles, so drill-down clicks are wired directly on
+    // the (stable, never-recreated) canvas elements instead, using Chart.js's
+    // public hit-testing API to find which element was clicked.
+    wireChartClick("chart-dashboard-1", "chart1", (index, chart) => {
+      if (state.chart1.breakdown === "year") return; // no single-state/region filter to set
+      setFilter(state.chart1.breakdown, String(chart.data.labels[index]));
+    });
+    wireChartClick("chart-dashboard-3", "chart3", (index, chart) => {
+      const [origin, destination] = chart.data.labels[index].split(" → ");
+      state.filters.prior_state = origin;
+      state.filters.current_state = destination;
+      document.getElementById("filter-prior-state").value = origin;
+      document.getElementById("filter-current-state").value = destination;
+      setTimeout(update, 0);
+    });
+    wireChartClick("chart-dashboard-4", "chart4", (index, chart) => {
+      setFilter("current_region", chart.data.labels[index]);
+    });
+  }
+
+  function wireChartClick(canvasId, chartKey, handler) {
+    const canvas = document.getElementById(canvasId);
+    const findElement = (evt) => {
+      const chart = state.charts[chartKey];
+      if (!chart) return null;
+      const hits = chart.getElementsAtEventForMode(evt, "nearest", { intersect: true }, false);
+      return hits.length ? { chart, index: hits[0].index } : null;
+    };
+    canvas.addEventListener("click", (evt) => {
+      const hit = findElement(evt);
+      if (hit) handler(hit.index, hit.chart);
+    });
+    canvas.addEventListener("mousemove", (evt) => {
+      canvas.style.cursor = findElement(evt) ? "pointer" : "default";
     });
   }
 
