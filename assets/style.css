@@ -263,6 +263,20 @@ table.data-table th {
 }
 .table-scroll { max-height: 360px; overflow: auto; border: 1px solid var(--border); border-radius: 12px; }
 
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.two-col .finding {
+  border-top: none;
+  padding-top: 0;
+}
+
+@media (max-width: 700px) {
+  .two-col { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 480px) {
   .site-nav .links a { padding: 8px; font-size: 0.82rem; }
 }

@@ -13,6 +13,10 @@ Live site: https://zoerowe1007.github.io/state-migration-dashboard/
 - `assets/style.css` — shared nav, layout, and component styles for both pages.
 - `assets/report.js` — fetches `assets/data/report_data.json` and renders the
   report page's headline numbers and Chart.js charts.
+- `assets/dashboard.js` — loads `data/processed/state_migration_cost_panel.csv`
+  directly in the browser and drives the dashboard's filters, summary numbers,
+  switchable charts, and data table. All filtering and aggregation happens
+  client-side, live, as you change the controls.
 - `assets/data/report_data.json` — every number and chart series on the report
   page, built by `data/generate_report_data.py` so it always matches the data.
 - `data/prepare_data.py` — rebuilds `data/processed/state_migration_cost_panel.csv`

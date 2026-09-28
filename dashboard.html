@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Dashboard — State Migration &amp; Cost of Living</title>
+  <meta name="description" content="Filter U.S. state-to-state migration and home value data live in the browser." />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="wrap">
+      <a class="brand" href="index.html">State Migration &amp; Cost of Living</a>
+      <div class="links">
+        <a href="index.html">Report</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <header class="page-head">
+      <h1>Explore the data</h1>
+      <p class="summary">
+        Filter 2005&ndash;2024 state-to-state migration flows by year, destination, origin, and region. Every
+        number, chart, and table row below recomputes in your browser as you change the filters.
+      </p>
+      <p class="byline" id="loading-note">Loading data…</p>
+    </header>
+
+    <div class="filter-bar">
+      <div class="filter-field">
+        <label for="filter-year">Year</label>
+        <select id="filter-year"><option value="all">All years</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-current-state">Destination state</label>
+        <select id="filter-current-state"><option value="all">All states</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-prior-state">Origin state</label>
+        <select id="filter-prior-state"><option value="all">All states</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-region">Destination region</label>
+        <select id="filter-region"><option value="all">All regions</option></select>
+      </div>
+      <button class="btn" id="reset-filters">Reset filters</button>
+    </div>
+
+    <section class="stat-grid" aria-label="Summary numbers">
+      <div class="stat-tile">
+        <div class="label">Total movers</div>
+        <div class="value" id="summary-total-movers">&ndash;</div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">Routes in view</div>
+        <div class="value" id="summary-routes">&ndash;</div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">Median home value (destination)</div>
+        <div class="value" id="summary-median-zhvi">&ndash;</div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">Moved to a cheaper state</div>
+        <div class="value" id="summary-cheaper-rate">&ndash;</div>
+      </div>
+    </section>
+
+    <section class="finding">
+      <h2>Movers by category</h2>
+      <p>Pick a measure and a variable to break it down by.</p>
+      <div class="switch-row" id="measure-switch" role="group" aria-label="Measure">
+        <button data-measure="total" class="active">Total movers</button>
+        <button data-measure="count">Number of routes</button>
+        <button data-measure="median_zhvi">Median home value</button>
+        <button data-measure="cheaper_rate">Share to cheaper state</button>
+      </div>
+      <div class="switch-row" id="breakdown-switch" role="group" aria-label="Breakdown">
+        <button data-breakdown="current_state" class="active">By destination state</button>
+        <button data-breakdown="prior_state">By origin state</button>
+        <button data-breakdown="current_region">By region</button>
+        <button data-breakdown="year">By year</button>
+      </div>
+      <div class="chart-card">
+        <div style="height:340px"><canvas id="chart-dashboard-1"></canvas></div>
+      </div>
+    </section>
+
+    <div class="two-col">
+      <section class="finding">
+        <h2>Movers by year</h2>
+        <div class="chart-card">
+          <div style="height:260px"><canvas id="chart-dashboard-2"></canvas></div>
+        </div>
+      </section>
+
+      <section class="finding">
+        <h2>Busiest routes in view</h2>
+        <div class="chart-card">
+          <div style="height:260px"><canvas id="chart-dashboard-3"></canvas></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="finding">
+      <h2>Regional composition</h2>
+      <div class="chart-card">
+        <div style="height:300px"><canvas id="chart-dashboard-4"></canvas></div>
+      </div>
+    </section>
+
+    <section class="finding">
+      <h2>Data behind this view</h2>
+      <p id="table-caption" class="byline"></p>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Origin</th>
+              <th>Destination</th>
+              <th>Movers</th>
+              <th>MOE</th>
+              <th>Dest. home value</th>
+              <th>Origin home value</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      Data: U.S. Census Bureau (ACS State-to-State Migration Flows) &amp; Zillow Research (ZHVI).
+      All calculations on this page run in your browser.
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="assets/dashboard.js"></script>
+</body>
+</html>
