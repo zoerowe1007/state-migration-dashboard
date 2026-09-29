@@ -1,8 +1,7 @@
 import { loadDataset } from "./data.js";
-import { initChart, setOption, seriesColors, themeDefaults, cssVar } from "./charts.js";
+import { seriesColors, lineChart, rankedBarChart, multiLineChart } from "./charts.js";
 
 const fmt = new Intl.NumberFormat("en-US");
-const fmtCompact = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
 const fmtMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 // ---- aggregation helpers (all operate on the typed-array Dataset from data.js) ----
@@ -112,93 +111,6 @@ function renderHeroPattern(container, series) {
   container.innerHTML = series
     .map(([, v]) => `<div style="flex:1; height:${(v / max) * 100}%; background:var(--color-accent); opacity:0.07;"></div>`)
     .join("");
-}
-
-// ---- chart rendering ----
-
-function lineChart(el, series, { color, formatValue = (v) => fmt.format(Math.round(v)), labelEnds = false } = {}) {
-  const theme = themeDefaults();
-  const chart = initChart(el);
-  const markPoint = labelEnds
-    ? {
-        data: [
-          { coord: [0, series[0][1]], value: formatValue(series[0][1]), symbolSize: 0, label: { position: "top" } },
-          {
-            coord: [series.length - 1, series[series.length - 1][1]],
-            value: formatValue(series[series.length - 1][1]),
-            symbolSize: 0,
-            label: { position: "top" },
-          },
-        ],
-      }
-    : undefined;
-  setOption(chart, {
-    grid: { left: 48, right: 16, top: labelEnds ? 32 : 16, bottom: 28 },
-    textStyle: theme.textStyle,
-    xAxis: { type: "category", data: series.map((s) => s[0]), axisLine: theme.axisLine, axisLabel: theme.axisLabel },
-    yAxis: { type: "value", axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
-    series: [
-      {
-        type: "line",
-        data: series.map((s) => s[1]),
-        color,
-        lineStyle: { width: 2 },
-        symbol: labelEnds ? "circle" : "none",
-        symbolSize: 6,
-        markPoint,
-      },
-    ],
-    tooltip: { trigger: "axis", valueFormatter: formatValue },
-  });
-  return chart;
-}
-
-function rankedBarChart(el, entries, { formatValue = (v) => fmt.format(Math.round(v)), diverging = false } = {}) {
-  const theme = themeDefaults();
-  const [c1, , , c4] = seriesColors();
-  const chart = initChart(el);
-  setOption(chart, {
-    grid: { left: 140, right: 24, top: 8, bottom: 28 },
-    textStyle: theme.textStyle,
-    xAxis: { type: "value", axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
-    yAxis: { type: "category", data: entries.map((e) => e[0]), inverse: true, axisLine: theme.axisLine, axisLabel: theme.axisLabel },
-    series: [
-      {
-        type: "bar",
-        data: entries.map((e) => e[1]),
-        itemStyle: {
-          color: (p) => (diverging ? (p.value >= 0 ? c1 : c4) : c1),
-          borderRadius: 3,
-        },
-        barMaxWidth: 18,
-      },
-    ],
-    tooltip: { trigger: "axis", axisPointer: { type: "shadow" }, valueFormatter: formatValue },
-  });
-  return chart;
-}
-
-function multiLineChart(el, years, seriesByLabel) {
-  const theme = themeDefaults();
-  const colors = seriesColors();
-  const chart = initChart(el);
-  setOption(chart, {
-    grid: { left: 48, right: 16, top: 32, bottom: 40 },
-    textStyle: theme.textStyle,
-    legend: { bottom: 0, textStyle: theme.textStyle },
-    xAxis: { type: "category", data: years, axisLine: theme.axisLine, axisLabel: theme.axisLabel },
-    yAxis: { type: "value", axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
-    series: Object.entries(seriesByLabel).map(([label, data], i) => ({
-      name: label,
-      type: "line",
-      data,
-      color: colors[i % colors.length],
-      lineStyle: { width: 2 },
-      symbol: "none",
-    })),
-    tooltip: { trigger: "axis" },
-  });
-  return chart;
 }
 
 // ---- main ----

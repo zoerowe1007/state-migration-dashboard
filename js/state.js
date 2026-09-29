@@ -1,62 +1,65 @@
-// Filter state: a small store that stays in sync with the URL query string,
-// so "Copy link to this view" and the browser back/forward buttons both work.
-
-/** @typedef {{year: string, current_state: string, prior_state: string, current_region: string}} Filters */
+// Filter + control state: a small store that stays in sync with the URL
+// query string, so "Copy link to this view" and the browser back/forward
+// buttons both work. Covers the 4 data filters AND the main chart's
+// measure/breakdown/chart-type controls, since Phase 6 asks for "all
+// filter/control state" to live in the URL, not just the data filters.
 
 export const FILTER_KEYS = ["year", "current_state", "prior_state", "current_region"];
+export const CONTROL_KEYS = ["measure", "breakdown", "charttype"];
+export const ALL_KEYS = [...FILTER_KEYS, ...CONTROL_KEYS];
 
-export const DEFAULT_FILTERS = Object.freeze({
+export const DEFAULTS = Object.freeze({
   year: "all",
   current_state: "all",
   prior_state: "all",
   current_region: "all",
+  measure: "total",
+  breakdown: "current_state",
+  charttype: "bar",
 });
 
-/** Reads filters from the current URL's query string, falling back to defaults. */
-export function readFiltersFromUrl() {
+/** Reads state from the current URL's query string, falling back to defaults. */
+export function readStateFromUrl() {
   const params = new URLSearchParams(location.search);
-  const filters = { ...DEFAULT_FILTERS };
-  for (const key of FILTER_KEYS) {
+  const state = { ...DEFAULTS };
+  for (const key of ALL_KEYS) {
     const v = params.get(key);
-    if (v) filters[key] = v;
+    if (v) state[key] = v;
   }
-  return filters;
+  return state;
 }
 
-/** Writes filters into the URL (replacing history so back/forward tracks real navigation only on push). */
-export function writeFiltersToUrl(filters, { push = false } = {}) {
+/** Writes state into the URL (replace by default; push for "real" navigation, e.g. reset). */
+export function writeStateToUrl(state, { push = false } = {}) {
   const params = new URLSearchParams();
-  for (const key of FILTER_KEYS) {
-    if (filters[key] && filters[key] !== "all") params.set(key, filters[key]);
+  for (const key of ALL_KEYS) {
+    if (state[key] && state[key] !== DEFAULTS[key]) params.set(key, state[key]);
   }
   const query = params.toString();
   const url = query ? `${location.pathname}?${query}` : location.pathname;
-  if (push) history.pushState(filters, "", url);
-  else history.replaceState(filters, "", url);
+  if (push) history.pushState(state, "", url);
+  else history.replaceState(state, "", url);
 }
 
-/**
- * Creates a small observable filter store.
- * @param {Partial<Filters>} initial
- */
+/** Creates a small observable state store, persisted to the URL on every change. */
 export function createFilterStore(initial) {
-  let filters = { ...DEFAULT_FILTERS, ...initial };
+  let state = { ...DEFAULTS, ...initial };
   const listeners = new Set();
 
   function notify() {
-    for (const fn of listeners) fn(filters);
+    for (const fn of listeners) fn(state);
   }
 
   return {
-    get: () => filters,
+    get: () => state,
     set(patch, opts) {
-      filters = { ...filters, ...patch };
-      writeFiltersToUrl(filters, opts);
+      state = { ...state, ...patch };
+      writeStateToUrl(state, opts);
       notify();
     },
     reset() {
-      filters = { ...DEFAULT_FILTERS };
-      writeFiltersToUrl(filters, { push: true });
+      state = { ...DEFAULTS };
+      writeStateToUrl(state, { push: true });
       notify();
     },
     subscribe(fn) {
@@ -67,9 +70,10 @@ export function createFilterStore(initial) {
 }
 
 /**
- * Computes a boolean mask over the dataset for the given filters.
+ * Computes a boolean mask over the dataset for the 4 data filters (ignores
+ * the main-chart control keys, which don't filter rows).
  * @param {import('./data.js').Dataset} data
- * @param {Filters} filters
+ * @param {ReturnType<typeof readStateFromUrl>} filters
  * @returns {Uint8Array}
  */
 export function computeMask(data, filters) {
@@ -87,4 +91,11 @@ export function computeMask(data, filters) {
     mask[i] = 1;
   }
   return mask;
+}
+
+/** Returns the array indices where mask[i] === 1. */
+export function maskIndices(mask) {
+  const out = [];
+  for (let i = 0; i < mask.length; i++) if (mask[i]) out.push(i);
+  return out;
 }

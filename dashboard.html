@@ -4,15 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Dashboard — State Migration &amp; Cost of Living</title>
+  <meta name="description" content="Filter U.S. state-to-state migration and home value data live in the browser." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <!-- Phase 3 design-system checkpoint: colors, fonts, cards, nav are now
-       real. Full filter bar / KPI row / panel grid is Phase 5 — this still
-       uses the Phase 2 minimal content, just re-skinned to prove the
-       tokens out (including the .btn / .card / select styles). -->
   <nav class="site-nav">
     <div class="wrap">
       <a class="brand" href="index.html">State Migration &amp; Cost of Living</a>
@@ -23,18 +20,183 @@
     </div>
   </nav>
 
-  <main class="wrap" style="padding-top: var(--space-6); padding-bottom: var(--space-8);">
-    <h1>Dashboard</h1>
-    <p id="selection-count" class="kpi-label">Loading…</p>
+  <main class="wrap">
+    <div class="dash-header">
+      <div>
+        <h1 style="margin-bottom: 4px;">Dashboard</h1>
+        <p id="selection-count" class="kpi-label">Loading data&hellip;</p>
+      </div>
+      <div class="actions">
+        <button id="copy-link" class="btn" type="button">Copy link to this view</button>
+        <button id="reset-filters" class="btn" type="button">Reset filters</button>
+      </div>
+    </div>
 
-    <section aria-label="Filters" class="card" style="padding: var(--space-5); margin-top: var(--space-4); display: flex; gap: var(--space-4); align-items: end; flex-wrap: wrap;">
-      <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--color-text-secondary);">Year <select id="filter-year"></select></label>
-      <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--color-text-secondary);">Destination state <select id="filter-current-state"></select></label>
-      <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--color-text-secondary);">Origin state <select id="filter-prior-state"></select></label>
-      <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--color-text-secondary);">Region <select id="filter-region"></select></label>
-      <button id="reset-filters" class="btn" type="button">Reset filters</button>
+    <section class="card filter-bar" aria-label="Filters">
+      <div class="filter-field">
+        <label for="filter-year">Year</label>
+        <select id="filter-year"><option value="all">All years</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-current-state">Destination state</label>
+        <select id="filter-current-state"><option value="all">All states</option></select>
+      </div>
+      <div class="filter-field">
+        <label for="filter-prior-state">Origin state</label>
+        <select id="filter-prior-state"><option value="all">All states</option></select>
+      </div>
+      <div class="filter-field">
+        <label id="region-label">Region</label>
+        <div class="segmented" id="filter-region" role="group" aria-labelledby="region-label"></div>
+      </div>
     </section>
+
+    <div class="active-filters" id="active-filters" aria-live="polite"></div>
+
+    <section class="kpi-row" aria-label="Key metrics">
+      <div class="card kpi-card">
+        <div class="kpi-label">Total movers</div>
+        <span id="kpi-total-movers" class="kpi-value">&ndash;</span>
+        <div class="kpi-delta" id="kpi-delta-total-movers"></div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Routes in view</div>
+        <span id="kpi-routes" class="kpi-value">&ndash;</span>
+        <div class="kpi-delta" id="kpi-delta-routes"></div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Median destination home value</div>
+        <span id="kpi-median-zhvi" class="kpi-value">&ndash;</span>
+        <div class="kpi-delta" id="kpi-delta-median-zhvi"></div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Moved to a cheaper state</div>
+        <span id="kpi-cheaper-rate" class="kpi-value">&ndash;</span>
+        <div class="kpi-delta" id="kpi-delta-cheaper-rate"></div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Avg. home value gap</div>
+        <span id="kpi-avg-gap" class="kpi-value">&ndash;</span>
+        <div class="kpi-delta" id="kpi-delta-avg-gap"></div>
+      </div>
+    </section>
+
+    <section aria-label="Main chart">
+      <div class="controls-row">
+        <div class="control-group">
+          <span>Measure</span>
+          <select id="main-measure">
+            <option value="total">Total movers</option>
+            <option value="count">Number of routes</option>
+            <option value="median_zhvi">Median home value</option>
+            <option value="cheaper_rate">Share to cheaper state</option>
+          </select>
+          <span>Break down by</span>
+          <select id="main-breakdown">
+            <option value="current_state">Destination state</option>
+            <option value="prior_state">Origin state</option>
+            <option value="current_region">Region</option>
+            <option value="year">Year</option>
+          </select>
+          <span>Chart type</span>
+          <select id="main-chart-type">
+            <option value="bar">Grouped bars</option>
+            <option value="stacked">Stacked bars</option>
+            <option value="line">Lines</option>
+          </select>
+        </div>
+        <div class="hint">Click a bar or point to filter on it.</div>
+      </div>
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Movers by category</div>
+            <div class="panel-subtitle">When broken down by year, each region gets its own series &mdash; otherwise it's one bar per category.</div>
+          </div>
+          <div class="panel-toolbar" data-panel="main">
+            <button data-view="chart" class="is-on">Chart</button>
+            <button data-view="table">Table</button>
+            <button data-action="png">PNG</button>
+          </div>
+        </div>
+        <div class="panel-body" data-view-body="chart"><div id="main-chart" style="height: 360px;"></div></div>
+        <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="main-table"></table></div></div>
+      </div>
+    </section>
+
+    <div class="panel-grid">
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Movers by year</div>
+            <div class="panel-subtitle">Total interstate movers in the current filter, each year.</div>
+          </div>
+          <div class="panel-toolbar" data-panel="trend">
+            <button data-view="chart" class="is-on">Chart</button>
+            <button data-view="table">Table</button>
+            <button data-action="png">PNG</button>
+          </div>
+        </div>
+        <div class="panel-body" data-view-body="chart"><div id="chart-trend" style="height: 260px;"></div></div>
+        <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-trend"></table></div></div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Busiest routes</div>
+            <div class="panel-subtitle">Top 10 origin &rarr; destination flows in view; click a bar to filter to it.</div>
+          </div>
+          <div class="panel-toolbar" data-panel="routes">
+            <button data-view="chart" class="is-on">Chart</button>
+            <button data-view="table">Table</button>
+            <button data-action="png">PNG</button>
+          </div>
+        </div>
+        <div class="panel-body" data-view-body="chart"><div id="chart-routes" style="height: 260px;"></div></div>
+        <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-routes"></table></div></div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Home value gap distribution</div>
+            <div class="panel-subtitle">How many state-pairs fall into each home-value-gap range, in view.</div>
+          </div>
+          <div class="panel-toolbar" data-panel="histogram">
+            <button data-view="chart" class="is-on">Chart</button>
+            <button data-view="table">Table</button>
+            <button data-action="png">PNG</button>
+          </div>
+        </div>
+        <div class="panel-body" data-view-body="chart"><div id="chart-histogram" style="height: 260px;"></div></div>
+        <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-histogram"></table></div></div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Movers vs. cost gap</div>
+            <div class="panel-subtitle">
+              Each point is one state-pair-year in view. Sampled to 3,000 points if larger.
+              <label style="display:block; margin-top:4px; font-weight: 500;">
+                <input type="checkbox" id="scatter-refline" /> Show break-even line (gap = $0)
+              </label>
+            </div>
+          </div>
+          <div class="panel-toolbar" data-panel="scatter">
+            <button data-view="chart" class="is-on">Chart</button>
+            <button data-view="table">Table</button>
+            <button data-action="png">PNG</button>
+          </div>
+        </div>
+        <div class="panel-body" data-view-body="chart"><div id="chart-scatter" style="height: 300px;"></div></div>
+        <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-scatter"></table></div></div>
+      </div>
+    </div>
   </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.1.0/echarts.min.js"></script>
   <script type="module" src="js/dashboard.js"></script>
