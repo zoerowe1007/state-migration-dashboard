@@ -1,8 +1,65 @@
 import { loadDataset } from "./data.js";
 import { seriesColors, lineChart, rankedBarChart, multiLineChart } from "./charts.js";
+import { applyIcons } from "./icons.js";
 
 const fmt = new Intl.NumberFormat("en-US");
 const fmtMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+function prefersReducedMotion() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/** Scroll-road progress bar: fill width tracks reading progress, a truck
+ * icon rides its leading edge. This is a direct 1:1 scroll mapping (like a
+ * native scrollbar), not an autoplaying animation, so it isn't gated behind
+ * prefers-reduced-motion -- only the traveling dots / count-up / hover
+ * animations are. */
+function initScrollRoad() {
+  const fill = document.getElementById("scroll-road-fill");
+  if (!fill) return;
+  const update = () => {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    const pct = max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0;
+    fill.style.width = pct + "%";
+  };
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+}
+
+/** Animates a number from 0 to its target when it scrolls into view (Phase 8:
+ * "big numbers count up"). Reads the target from the element's already-set
+ * textContent (a formatted string) by re-parsing it isn't reliable, so the
+ * caller passes the raw numeric target and a formatter instead. */
+function countUpOnVisible(el, target, formatValue) {
+  if (!el) return;
+  if (prefersReducedMotion() || !("IntersectionObserver" in window)) {
+    el.textContent = formatValue(target);
+    return;
+  }
+  el.textContent = formatValue(0);
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        io.disconnect();
+        const start = performance.now();
+        const duration = 900;
+        const ease = (t) => 1 - Math.pow(1 - t, 3);
+        function tick(now) {
+          const p = Math.min(1, (now - start) / duration);
+          el.textContent = formatValue(target * ease(p));
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = formatValue(target);
+        }
+        requestAnimationFrame(tick);
+      }
+    },
+    { threshold: 0.4 }
+  );
+  io.observe(el);
+}
 
 // ---- aggregation helpers (all operate on the typed-array Dataset from data.js) ----
 
@@ -122,7 +179,7 @@ async function main() {
   // Hero
   const gapSeries = weightedGapByYear(data);
   const latestGap = gapSeries[gapSeries.length - 1][1];
-  document.getElementById("headline-number").textContent = fmtMoney.format(Math.round(latestGap));
+  countUpOnVisible(document.getElementById("headline-number"), latestGap, (v) => fmtMoney.format(Math.round(v)));
   document.getElementById("headline-year").textContent = String(LATEST);
   const [accent] = seriesColors();
   lineChart(document.getElementById("headline-chart"), gapSeries, { color: accent, formatValue: (v) => fmtMoney.format(Math.round(v)), labelEnds: true });
@@ -179,6 +236,9 @@ async function main() {
       if (chart) chart.resize();
     });
   });
+
+  applyIcons();
+  initScrollRoad();
 }
 
 main().catch((err) => {

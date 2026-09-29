@@ -10,6 +10,12 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <div class="scroll-road" aria-hidden="true">
+    <div class="scroll-road-fill" id="scroll-road-fill">
+      <span class="scroll-road-truck" id="scroll-road-truck" data-icon="truck"></span>
+    </div>
+  </div>
+
   <nav class="site-nav">
     <div class="wrap">
       <a class="brand" href="index.html">State Migration &amp; Cost of Living</a>
@@ -35,7 +41,7 @@
       </div>
       <div class="card hero-kpi">
         <p class="kpi-label">Movers-weighted home value gap (destination &minus; origin), <span id="headline-year">2024</span></p>
-        <p id="headline-number" class="kpi-value">&ndash;</p>
+        <p id="headline-number" class="kpi-value" data-countup>&ndash;</p>
         <p style="color: var(--color-text-secondary); font-size: 0.9rem; margin: 0 0 var(--space-3);">
           The gap between where people move from and where they land &mdash; and it has widened sharply since 2020.
         </p>
@@ -46,6 +52,7 @@
 
   <main class="wrap" id="report">
     <section class="report-section">
+      <p class="stop-label">Stop 1</p>
       <h2><span class="num">1</span> Interstate migration has been remarkably stable for twenty years</h2>
       <p>
         Roughly <strong>7.5 million people</strong> move from one U.S. state to another every year &mdash;
@@ -59,7 +66,9 @@
       </div>
     </section>
 
+    <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
+      <p class="stop-label">Stop 2</p>
       <h2><span class="num">2</span> The South is absorbing the Northeast and Midwest's population</h2>
       <p>
         Add up net migration &mdash; people arriving minus people leaving &mdash; by region for every year
@@ -74,7 +83,9 @@
       </div>
     </section>
 
+    <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
+      <p class="stop-label">Stop 3</p>
       <h2><span class="num">3</span> Florida and Texas are the biggest winners; California and New York the biggest losers</h2>
       <p>
         Averaged over the five most recent years, <strong>Florida gained a net 665,000 people</strong> and
@@ -88,7 +99,9 @@
       </div>
     </section>
 
+    <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
+      <p class="stop-label">Stop 4</p>
       <h2><span class="num">4</span> California to Texas is the single busiest route in the country</h2>
       <p>
         In 2024, an estimated <strong>77,161 people moved from California to Texas</strong> &mdash; the
@@ -100,7 +113,9 @@
       </div>
     </section>
 
+    <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
+      <p class="stop-label">Stop 5</p>
       <h2><span class="num">5</span> Most movers are chasing lower housing costs</h2>
       <p>
         Weight every move by how many people made it, and <strong>53% of movers in 2024 relocated to a
@@ -113,7 +128,9 @@
       </div>
     </section>
 
+    <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
+      <p class="stop-label">Stop 6</p>
       <h2><span class="num">6</span> The price gap between origin and destination has nearly doubled since 2019</h2>
       <p>
         The movers-weighted home-value gap was <strong>&minus;$10,895 in 2019</strong>. By 2021 it had
@@ -126,7 +143,9 @@
       </div>
     </section>
 
+    <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
+      <p class="stop-label">Stop 7</p>
       <h2><span class="num">7</span> Home values surged hardest in the same states that are gaining people</h2>
       <p>
         Since 2005, home values are up <strong>191% in Idaho</strong>, <strong>178% in Utah</strong>, and
@@ -140,7 +159,9 @@
       </div>
     </section>
 
+    <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
+      <p class="stop-label">Stop 8 &mdash; final stop</p>
       <h2><span class="num">8</span> Puerto Rico's outflow spiked the year after Hurricane Maria</h2>
       <p>
         Hurricane Maria made landfall in September 2017. In the 2018 survey year that followed,
@@ -154,7 +175,7 @@
     </section>
 
     <section class="cta-row">
-      <a class="btn btn-primary" href="dashboard.html" style="font-size: 1rem; padding: var(--space-3) var(--space-6);">Open the dashboard &rarr;</a>
+      <a class="btn btn-primary" href="dashboard.html" style="font-size: 1rem; padding: var(--space-3) var(--space-6);"><span class="btn-icon" data-icon="truck"></span> Open the dashboard &rarr;</a>
     </section>
   </main>
 
