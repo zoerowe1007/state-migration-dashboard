@@ -4,14 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Where Americans Move, and What It Costs</title>
+  <meta name="description" content="A report on U.S. state-to-state migration and cost of living, built from Census and Zillow data." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <!-- Phase 3 design-system checkpoint: colors, fonts, cards, nav are now
-       real. Full hero/report layout is Phase 4 — this still uses the
-       Phase 2 minimal content, just re-skinned to prove the tokens out. -->
   <nav class="site-nav">
     <div class="wrap">
       <a class="brand" href="index.html">State Migration &amp; Cost of Living</a>
@@ -22,15 +20,149 @@
     </div>
   </nav>
 
-  <main class="wrap" style="padding-top: var(--space-6); padding-bottom: var(--space-8);">
-    <h1>Where Americans move, and what it costs</h1>
+  <header class="hero">
+    <div class="hero-pattern" id="hero-pattern" aria-hidden="true"></div>
+    <div class="wrap">
+      <div>
+        <h1>Where Americans move, and what it costs</h1>
+        <p class="intro">
+          Every year the Census Bureau asks a few million people where they lived a year ago. This report
+          follows those movers across two decades of state-to-state migration data, paired with Zillow's
+          home value index for every state they left and every state they landed in.
+        </p>
+        <p class="byline">Prepared by Zoe Rowe for Financial Data Analytics</p>
+        <a class="read-link" href="#report">Read the report &darr;</a>
+      </div>
+      <div class="card hero-kpi">
+        <p class="kpi-label">Movers-weighted home value gap (destination &minus; origin), <span id="headline-year">2024</span></p>
+        <p id="headline-number" class="kpi-value">&ndash;</p>
+        <p style="color: var(--color-text-secondary); font-size: 0.9rem; margin: 0 0 var(--space-3);">
+          The gap between where people move from and where they land &mdash; and it has widened sharply since 2020.
+        </p>
+        <div id="headline-chart" style="width: 100%; height: 220px;"></div>
+      </div>
+    </div>
+  </header>
 
-    <section aria-label="Headline number" class="card" style="padding: var(--space-5); margin-top: var(--space-5);">
-      <p class="kpi-label">Movers-weighted home value gap (destination &minus; origin), latest year</p>
-      <p id="headline-number" class="kpi-value" style="font-size: 2.5rem; margin: var(--space-2) 0;">&ndash;</p>
-      <div id="headline-chart" style="width: 100%; height: 280px;"></div>
+  <main class="wrap" id="report">
+    <section class="report-section">
+      <h2><span class="num">1</span> Interstate migration has been remarkably stable for twenty years</h2>
+      <p>
+        Roughly <strong>7.5 million people</strong> move from one U.S. state to another every year &mdash;
+        about 2% of the population. The low point was <strong>6.83 million in 2010</strong>, in the
+        aftermath of the housing crash. The high point was <strong>8.30 million in 2022</strong>, as remote
+        work loosened the tie between where people lived and where they worked.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Total interstate movers by year</div>
+        <div id="chart-national-trend" style="height: 280px;"></div>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h2><span class="num">2</span> The South is absorbing the Northeast and Midwest's population</h2>
+      <p>
+        Add up net migration &mdash; people arriving minus people leaving &mdash; by region for every year
+        since 2005, and the direction never changes. The <strong>South has gained a net 8.7 million
+        people</strong>; the <strong>Northeast has lost 5.0 million</strong> and the
+        <strong>Midwest 2.5 million</strong>. The West has been a net loser every year since 2021, shedding
+        <strong>153,000 people in 2024 alone</strong>.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Net migration by Census region, 2005&ndash;2024</div>
+        <div id="chart-region-trend" style="height: 300px;"></div>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h2><span class="num">3</span> Florida and Texas are the biggest winners; California and New York the biggest losers</h2>
+      <p>
+        Averaged over the five most recent years, <strong>Florida gained a net 665,000 people</strong> and
+        <strong>Texas gained 532,000</strong>. On the other side, <strong>California lost a net 1.27 million
+        people</strong> and <strong>New York lost 840,000</strong> &mdash; roughly double what any other
+        state lost.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Net migration, 5-year average</div>
+        <div id="chart-gainers-losers" style="height: 340px;"></div>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h2><span class="num">4</span> California to Texas is the single busiest route in the country</h2>
+      <p>
+        In 2024, an estimated <strong>77,161 people moved from California to Texas</strong> &mdash; the
+        largest flow between any two states, and nearly 30,000 more than the reverse trip.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Busiest state-to-state routes, 2024</div>
+        <div id="chart-top-flows" style="height: 260px;"></div>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h2><span class="num">5</span> Most movers are chasing lower housing costs</h2>
+      <p>
+        Weight every move by how many people made it, and <strong>53% of movers in 2024 relocated to a
+        state with a lower home value index</strong> than the one they left. That share has held between
+        52% and 55% every year since 2005.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Share of movers headed to a cheaper state</div>
+        <div id="chart-cheaper-share" style="height: 260px;"></div>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h2><span class="num">6</span> The price gap between origin and destination has nearly doubled since 2019</h2>
+      <p>
+        The movers-weighted home-value gap was <strong>&minus;$10,895 in 2019</strong>. By 2021 it had
+        jumped to <strong>&minus;$24,899</strong> as remote work let people leave expensive coastal metros
+        for good, and it remains a wide <strong>&minus;$18,321 in 2024</strong>.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Movers-weighted home value gap (destination &minus; origin)</div>
+        <div id="chart-cost-gap" style="height: 280px;"></div>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h2><span class="num">7</span> Home values surged hardest in the same states that are gaining people</h2>
+      <p>
+        Since 2005, home values are up <strong>191% in Idaho</strong>, <strong>178% in Utah</strong>, and
+        <strong>174% in Montana</strong> &mdash; three of the biggest net-migration winners on record. At
+        the other end, <strong>Illinois (+37%)</strong> and <strong>Nevada (+41%)</strong> had the slowest
+        price growth of any state with usable data.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Home value change, 2005 to latest year (highest and lowest 8 states)</div>
+        <div id="chart-home-value-change" style="height: 380px;"></div>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h2><span class="num">8</span> Puerto Rico's outflow spiked the year after Hurricane Maria</h2>
+      <p>
+        Hurricane Maria made landfall in September 2017. In the 2018 survey year that followed,
+        <strong>133,451 people left Puerto Rico for the mainland</strong> &mdash; up <strong>37% from
+        97,488 the year before</strong>, and the highest outflow anywhere in the record.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">People who left Puerto Rico for a U.S. state, by year</div>
+        <div id="chart-pr-outflow" style="height: 280px;"></div>
+      </div>
+    </section>
+
+    <section class="cta-row">
+      <a class="btn btn-primary" href="dashboard.html" style="font-size: 1rem; padding: var(--space-3) var(--space-6);">Open the dashboard &rarr;</a>
     </section>
   </main>
+
+  <footer style="border-top: 1px solid var(--color-border); padding: var(--space-5) 0 var(--space-7); color: var(--color-text-secondary); font-size: 0.85rem;">
+    <div class="wrap">
+      Data: U.S. Census Bureau (ACS State-to-State Migration Flows) &amp; Zillow Research (ZHVI).
+    </div>
+  </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.1.0/echarts.min.js"></script>
   <script type="module" src="js/report.js"></script>
