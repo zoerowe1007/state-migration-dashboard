@@ -4,25 +4,30 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Where Americans Move, and What It Costs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <!-- Phase 2 structure checkpoint: no design yet (Phase 3), no report
-       content yet (Phase 4). This proves data.js + charts.js load and
-       render correctly through the new module structure. -->
-  <nav>
+  <!-- Phase 3 design-system checkpoint: colors, fonts, cards, nav are now
+       real. Full hero/report layout is Phase 4 — this still uses the
+       Phase 2 minimal content, just re-skinned to prove the tokens out. -->
+  <nav class="site-nav">
     <div class="wrap">
-      <a href="index.html">State Migration &amp; Cost of Living</a>
-      <a href="dashboard.html">Dashboard</a>
+      <a class="brand" href="index.html">State Migration &amp; Cost of Living</a>
+      <div class="links">
+        <a href="index.html" class="active">Report</a>
+        <a href="dashboard.html">Dashboard</a>
+      </div>
     </div>
   </nav>
 
-  <main class="wrap">
+  <main class="wrap" style="padding-top: var(--space-6); padding-bottom: var(--space-8);">
     <h1>Where Americans move, and what it costs</h1>
 
-    <section aria-label="Headline number">
-      <p>Movers-weighted home value gap (destination &minus; origin), latest year:</p>
-      <p id="headline-number" style="font-size: 2rem; font-weight: 700;">&ndash;</p>
+    <section aria-label="Headline number" class="card" style="padding: var(--space-5); margin-top: var(--space-5);">
+      <p class="kpi-label">Movers-weighted home value gap (destination &minus; origin), latest year</p>
+      <p id="headline-number" class="kpi-value" style="font-size: 2.5rem; margin: var(--space-2) 0;">&ndash;</p>
       <div id="headline-chart" style="width: 100%; height: 280px;"></div>
     </section>
   </main>

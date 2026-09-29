@@ -1,18 +1,254 @@
-/* Structure-only reset for now. Design tokens (colors, fonts, spacing,
-   card/shadow treatment) land in Phase 3 — this file intentionally has no
-   visual design yet. */
+/* ===== Design system (Phase 3) — Razorback cardinal theme =====
+   Editorial, "financial report" look: lots of whitespace, one accent color
+   used sparingly. All colors below were checked against WCAG AA:
+     - Cardinal (#9D2235 light / #C8374D dark) passes AA-normal (4.5:1) as
+       TEXT only on the page/card surfaces in light mode, and as white-on-red
+       button/chip fills in both modes. In DARK mode, cardinal-as-text only
+       clears AA-LARGE (3:1) — so it's used there for big display numbers and
+       large headings only, never small body text or links.
+     - Muted gray (#6B7280) clears AA-normal on white cards (4.83:1) but only
+       AA-large on the page background (4.44:1) — so small muted text lives
+       on cards; anything muted directly on the page background uses
+       --color-text-secondary instead (5.38:1).
+     - Mustard and the chart "other" gray fail as text entirely by design —
+       they're chart/decoration colors only, never used for text or links. */
 
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap");
+
+:root {
+  color-scheme: light;
+
+  /* ---- color: light (default) ---- */
+  --color-bg: #F7F5F2;
+  --color-card: #FFFFFF;
+  --color-text: #1F1F1F;
+  --color-text-secondary: #5C6670;
+  --color-muted: #6B7280;         /* card surfaces only, see note above */
+  --color-border: #E4DFD9;
+  --color-accent: #9D2235;
+  --color-accent-contrast: #FFFFFF;
+  --color-highlight: #E9B44C;     /* decoration/chart only, never text */
+
+  /* chart series, in order; "other" bucket uses --chart-other */
+  --chart-1: #9D2235;
+  --chart-2: #5C6670;
+  --chart-3: #E9B44C;
+  --chart-4: #2E4A62;
+  --chart-other: #BDB8B2;
+
+  /* ---- type ---- */
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ---- spacing scale (4px base) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ---- shape / elevation ---- */
+  --radius-card: 10px;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px rgba(31, 31, 31, 0.04), 0 6px 16px -8px rgba(31, 31, 31, 0.10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-bg: #151515;
+    --color-card: #222222;
+    --color-text: #EDEAE3;
+    --color-text-secondary: #A3A3A3;
+    --color-muted: #A3A3A3;
+    --color-border: #333333;
+    --color-accent: #C8374D;
+    --color-accent-contrast: #FFFFFF;
+    --color-highlight: #E9B44C;
+
+    --chart-1: #C8374D;
+    --chart-2: #A3A3A3;
+    --chart-3: #E9B44C;
+    --chart-4: #5B84A8;
+    --chart-other: #6B6660;
+
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 16px -8px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ===== reset ===== */
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 var(--space-3);
+}
+
+a {
+  color: var(--color-accent);
 }
 
 .wrap {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--space-5);
+}
+
+/* ===== focus ring (visible, uses accent — passes 3:1 UI-component contrast
+   in both modes even where accent-as-text does not) ===== */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ===== nav ===== */
+.site-nav {
+  border-bottom: 1px solid var(--color-border);
+}
+.site-nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.site-nav .brand {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--color-text);
+  text-decoration: none;
+}
+.site-nav .links {
+  display: flex;
+  gap: var(--space-5);
+}
+.site-nav .links a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+.site-nav .links a.active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ===== cards ===== */
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* ===== KPI / large numbers ===== */
+.kpi-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-label {
+  font-family: var(--font-sans);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+/* ===== buttons ===== */
+.btn {
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.btn:hover {
+  border-color: var(--color-text-secondary);
+}
+.btn-primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+/* ===== chips (toggle / active-filter) ===== */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.chip.is-on {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+/* ===== segmented control ===== */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.segmented button {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  background: var(--color-card);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-right: 1px solid var(--color-border);
+}
+.segmented button:last-child {
+  border-right: none;
+}
+.segmented button.is-on {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+/* ===== form controls ===== */
+select {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text);
 }

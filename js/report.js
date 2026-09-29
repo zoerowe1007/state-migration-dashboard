@@ -1,5 +1,5 @@
 import { loadDataset } from "./data.js";
-import { initChart, setOption } from "./charts.js";
+import { initChart, setOption, seriesColors, themeDefaults } from "./charts.js";
 
 const fmtMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
@@ -26,11 +26,14 @@ async function main() {
 
   document.getElementById("headline-number").textContent = fmtMoney.format(Math.round(latest));
 
+  const theme = themeDefaults();
+  const [accent] = seriesColors();
   const chart = initChart(document.getElementById("headline-chart"));
   setOption(chart, {
-    xAxis: { type: "category", data: series.map((s) => s[0]) },
-    yAxis: { type: "value" },
-    series: [{ type: "line", data: series.map((s) => Math.round(s[1])) }],
+    textStyle: theme.textStyle,
+    xAxis: { type: "category", data: series.map((s) => s[0]), axisLine: theme.axisLine, axisLabel: theme.axisLabel },
+    yAxis: { type: "value", axisLine: theme.axisLine, axisLabel: theme.axisLabel, splitLine: theme.splitLine },
+    series: [{ type: "line", data: series.map((s) => Math.round(s[1])), color: accent, lineStyle: { width: 2 } }],
     tooltip: { trigger: "axis" },
   });
   window.addEventListener("resize", () => chart.resize());

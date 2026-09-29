@@ -2,6 +2,28 @@
 // Implemented in Phase 5 (dashboard build-out); stubs only for now so the
 // module boundary is settled before the design system (Phase 3) lands.
 
+/** Reads a CSS custom property's current value (theme-aware). */
+export function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/** The chart series palette, in spec order, read live from the current theme. */
+export function seriesColors() {
+  return [cssVar("--chart-1"), cssVar("--chart-2"), cssVar("--chart-3"), cssVar("--chart-4")];
+}
+
+/** Shared axis/text styling so charts match the surrounding page in both themes. */
+export function themeDefaults() {
+  const text = cssVar("--color-text-secondary");
+  const grid = cssVar("--color-border");
+  return {
+    textStyle: { fontFamily: "Inter, system-ui, sans-serif", color: text },
+    axisLine: { lineStyle: { color: grid } },
+    axisLabel: { color: text },
+    splitLine: { lineStyle: { color: grid } },
+  };
+}
+
 /**
  * Creates (or reuses) an ECharts instance on the given container element.
  * @param {HTMLElement} el

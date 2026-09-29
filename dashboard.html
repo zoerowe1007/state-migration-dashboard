@@ -4,29 +4,35 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Dashboard — State Migration &amp; Cost of Living</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <!-- Phase 2 structure checkpoint: no design yet (Phase 3), no KPI/panel
-       content yet (Phase 5). This proves data.js + state.js (filters + URL
-       sync) work end-to-end through the new module structure. -->
-  <nav>
+  <!-- Phase 3 design-system checkpoint: colors, fonts, cards, nav are now
+       real. Full filter bar / KPI row / panel grid is Phase 5 — this still
+       uses the Phase 2 minimal content, just re-skinned to prove the
+       tokens out (including the .btn / .card / select styles). -->
+  <nav class="site-nav">
     <div class="wrap">
-      <a href="index.html">State Migration &amp; Cost of Living</a>
-      <a href="dashboard.html">Dashboard</a>
+      <a class="brand" href="index.html">State Migration &amp; Cost of Living</a>
+      <div class="links">
+        <a href="index.html">Report</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+      </div>
     </div>
   </nav>
 
-  <main class="wrap">
+  <main class="wrap" style="padding-top: var(--space-6); padding-bottom: var(--space-8);">
     <h1>Dashboard</h1>
-    <p id="selection-count">Loading…</p>
+    <p id="selection-count" class="kpi-label">Loading…</p>
 
-    <section aria-label="Filters">
-      <label>Year <select id="filter-year"></select></label>
-      <label>Destination state <select id="filter-current-state"></select></label>
-      <label>Origin state <select id="filter-prior-state"></select></label>
-      <label>Region <select id="filter-region"></select></label>
-      <button id="reset-filters" type="button">Reset filters</button>
+    <section aria-label="Filters" class="card" style="padding: var(--space-5); margin-top: var(--space-4); display: flex; gap: var(--space-4); align-items: end; flex-wrap: wrap;">
+      <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--color-text-secondary);">Year <select id="filter-year"></select></label>
+      <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--color-text-secondary);">Destination state <select id="filter-current-state"></select></label>
+      <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--color-text-secondary);">Origin state <select id="filter-prior-state"></select></label>
+      <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem; color:var(--color-text-secondary);">Region <select id="filter-region"></select></label>
+      <button id="reset-filters" class="btn" type="button">Reset filters</button>
     </section>
   </main>
 
