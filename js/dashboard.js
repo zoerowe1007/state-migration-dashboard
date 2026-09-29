@@ -261,7 +261,8 @@ function renderMainPanel(indices, controls) {
         const row = { year: y };
         for (const r of REGIONS_ORDERED) row[r] = seriesByLabel[r] ? seriesByLabel[r][i] : null;
         return row;
-      })
+      }),
+      { onRowClick: (row) => store.set({ year: String(row.year) }) }
     );
     showEmptyState("main", indices.length === 0);
     return;
@@ -289,7 +290,8 @@ function renderMainPanel(indices, controls) {
   renderTable(
     document.getElementById("main-table"),
     [{ label: breakdownLabel(breakdown), key: "label" }, { label: measureInfo.label, key: "value", format: measureInfo.format }],
-    entries.map(([label, value]) => ({ label, value }))
+    entries.map(([label, value]) => ({ label, value })),
+    { onRowClick: (row) => setFilterFromLabel(breakdown, row.label) }
   );
   showEmptyState("main", indices.length === 0);
 }
@@ -340,7 +342,8 @@ function renderTrendPanel(indices) {
   renderTable(
     document.getElementById("table-trend"),
     [{ label: "Year", key: "year" }, { label: "Movers", key: "movers", format: (v) => fmt.format(v) }],
-    series.map(([year, movers]) => ({ year, movers }))
+    series.map(([year, movers]) => ({ year, movers })),
+    { onRowClick: (row) => store.set({ year: String(row.year) }) }
   );
   showEmptyState("trend", indices.length === 0);
 }
@@ -363,7 +366,13 @@ function renderRoutesPanel(indices) {
   renderTable(
     document.getElementById("table-routes"),
     [{ label: "Route", key: "route" }, { label: "Movers", key: "movers", format: (v) => fmt.format(v) }],
-    top.map(([route, movers]) => ({ route, movers }))
+    top.map(([route, movers]) => ({ route, movers })),
+    {
+      onRowClick: (row) => {
+        const [origin, destination] = row.route.split(" → ");
+        store.set({ prior_state: origin, current_state: destination });
+      },
+    }
   );
   showEmptyState("routes", indices.length === 0);
 }
@@ -441,7 +450,8 @@ function renderScatterPanel(indices, showRefLine) {
       { label: "Movers", key: "movers", format: (v) => fmt.format(v) },
       { label: "Gap", key: "gap", format: (v) => fmtMoney0.format(v) },
     ],
-    tableRows.slice(0, 500)
+    tableRows.slice(0, 500),
+    { onRowClick: (row) => store.set({ prior_state: row.prior, current_state: row.current, year: String(row.year) }) }
   );
   showEmptyState("scatter", indices.length === 0);
 }

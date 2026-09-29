@@ -2,11 +2,13 @@
 // chart panel.
 
 /**
- * Renders rows into a table, wiring click-to-sort on column headers.
+ * Renders rows into a table, wiring click-to-sort on column headers and
+ * (optionally) click-to-filter on rows, per Phase 6's "clicking a ... table
+ * row adds it as a filter" requirement.
  * @param {HTMLTableElement} table
  * @param {{label: string, key: string, format?: (v:any)=>string}[]} columns
  * @param {object[]} rows
- * @param {{initialSortKey?: string, initialSortDir?: 'asc'|'desc'}} [opts]
+ * @param {{initialSortKey?: string, initialSortDir?: 'asc'|'desc', onRowClick?: (row:object)=>void}} [opts]
  */
 export function renderTable(table, columns, rows, opts = {}) {
   let sortKey = opts.initialSortKey || columns[0].key;
@@ -54,15 +56,27 @@ export function renderTable(table, columns, rows, opts = {}) {
 
   function renderBody() {
     const tbody = table.tBodies[0] || table.createTBody();
-    const data = sorted();
-    tbody.innerHTML = data
-      .slice(0, 500)
-      .map(
-        (row) =>
-          `<tr>${columns.map((col) => `<td>${col.format ? col.format(row[col.key]) : row[col.key]}</td>`).join("")}</tr>`
-      )
+    const full = sorted();
+    const shown = full.slice(0, 500);
+    tbody.innerHTML = shown
+      .map((row) => `<tr>${columns.map((col) => `<td>${col.format ? col.format(row[col.key]) : row[col.key]}</td>`).join("")}</tr>`)
       .join("");
-    return data.length;
+    if (opts.onRowClick) {
+      [...tbody.rows].forEach((tr, i) => {
+        tr.style.cursor = "pointer";
+        tr.tabIndex = 0;
+        tr.setAttribute("role", "button");
+        const activate = () => opts.onRowClick(shown[i]);
+        tr.addEventListener("click", activate);
+        tr.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            activate();
+          }
+        });
+      });
+    }
+    return full.length;
   }
 
   function render() {

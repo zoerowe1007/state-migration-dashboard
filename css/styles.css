@@ -85,6 +85,14 @@
   box-sizing: border-box;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 body {
   margin: 0;
   background: var(--color-bg);
@@ -158,6 +166,18 @@ a {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.kpi-card:hover,
+.panel:hover {
+  box-shadow: 0 2px 4px rgba(31, 31, 31, 0.06), 0 10px 24px -10px rgba(31, 31, 31, 0.16);
+  transform: translateY(-1px);
+}
+@media (prefers-color-scheme: dark) {
+  .kpi-card:hover,
+  .panel:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35), 0 10px 24px -10px rgba(0, 0, 0, 0.6);
+  }
 }
 
 /* ===== KPI / large numbers ===== */
@@ -528,6 +548,13 @@ table.data-table td {
   padding: 6px 8px;
   border-bottom: 1px solid var(--color-border);
   font-variant-numeric: tabular-nums;
+}
+table.data-table tbody tr {
+  transition: background 0.1s ease;
+}
+table.data-table tbody tr[role="button"]:hover,
+table.data-table tbody tr[role="button"]:focus-visible {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
 }
 table.data-table th {
   color: var(--color-text-secondary);
