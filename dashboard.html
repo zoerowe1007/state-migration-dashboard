@@ -27,6 +27,7 @@
         <p id="selection-count" class="kpi-label">Loading data&hellip;</p>
       </div>
       <div class="actions">
+        <button id="surprise-me" class="btn" type="button"><span class="btn-icon" data-icon="dice"></span> Surprise me</button>
         <button id="copy-link" class="btn" type="button">Copy link to this view</button>
         <button id="reset-filters" class="btn" type="button">Reset filters</button>
       </div>
@@ -79,6 +80,56 @@
         <span id="kpi-avg-gap" class="kpi-value">&ndash;</span>
         <div class="kpi-delta" id="kpi-delta-avg-gap"></div>
       </div>
+    </section>
+
+    <section aria-label="Migration flow map">
+      <div class="controls-row">
+        <div class="control-group">
+          <span>Show</span>
+          <div class="segmented" id="map-mode">
+            <button data-value="in" class="is-on">Moving in</button>
+            <button data-value="out">Moving out</button>
+            <button data-value="net">Net change</button>
+          </div>
+        </div>
+        <div class="hint">Click a state to filter to it. Arc thickness = number of moves.</div>
+      </div>
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title"><span class="btn-icon" data-icon="truck"></span> Migration flow map</div>
+            <div class="panel-subtitle">The busiest routes in view, drawn as arcs; state color shows who's moving in, out, or the net change. Alaska, Hawaii, and Puerto Rico are shown in their true relative positions.</div>
+          </div>
+          <div class="panel-toolbar" data-panel="map">
+            <button data-view="chart" class="is-on">Chart</button>
+            <button data-view="table">Table</button>
+            <button data-action="png">PNG</button>
+          </div>
+        </div>
+        <div class="panel-body" data-view-body="chart"><div id="map-chart" style="height: 460px;"></div></div>
+        <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="map-table"></table></div></div>
+      </div>
+    </section>
+
+    <section aria-label="Plan your move" class="card panel plan-your-move">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title"><span class="btn-icon" data-icon="house"></span> Plan your move</div>
+          <div class="panel-subtitle">Compare two states head-to-head, using each state's most recent year of data.</div>
+        </div>
+      </div>
+      <div class="plan-your-move-pickers">
+        <div class="filter-field">
+          <label for="plan-from">Moving from</label>
+          <select id="plan-from"></select>
+        </div>
+        <span class="plan-arrow" aria-hidden="true">&rarr;</span>
+        <div class="filter-field">
+          <label for="plan-to">Moving to</label>
+          <select id="plan-to"></select>
+        </div>
+      </div>
+      <div id="plan-your-move-result"></div>
     </section>
 
     <section aria-label="Main chart">

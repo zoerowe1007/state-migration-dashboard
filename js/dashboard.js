@@ -3,6 +3,8 @@ import { createFilterStore, computeMask, maskIndices, readStateFromUrl, DEFAULTS
 import { rankedBarChart, lineChart, multiLineChart, multiBarChart, histogramChart, scatterChart, seriesColors } from "./charts.js";
 import { renderTable } from "./tables.js";
 import { downloadChartPng } from "./export.js";
+import { loadGeoData, flowMapChart } from "./map.js";
+import { icon, applyIcons } from "./icons.js";
 
 const fmt = new Intl.NumberFormat("en-US");
 const fmtMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -220,7 +222,7 @@ function showEmptyState(panelKey, isEmpty) {
     if (!empty) {
       empty = document.createElement("div");
       empty.className = "empty-state";
-      empty.textContent = "No data matches these filters.";
+      empty.innerHTML = `<span class="btn-icon">${icon("box", 32)}</span><span>Nothing packed here &mdash; try removing a filter.</span>`;
       chartBody.appendChild(empty);
     }
     empty.hidden = false;
@@ -456,6 +458,144 @@ function renderScatterPanel(indices, showRefLine) {
   showEmptyState("scatter", indices.length === 0);
 }
 
+// ---- panel: migration flow map ----
+
+let geo = null;
+let mapMode = "in";
+
+function renderMapPanel(indices, filters) {
+  if (!geo) return; // geo data still loading
+  const inSum = new Map(), outSum = new Map();
+  const routeSum = new Map();
+  for (const i of indices) {
+    const dest = data.states[data.currentState[i]];
+    const orig = data.states[data.priorState[i]];
+    inSum.set(dest, (inSum.get(dest) || 0) + data.movers[i]);
+    outSum.set(orig, (outSum.get(orig) || 0) + data.movers[i]);
+    const key = `${orig}→${dest}`;
+    routeSum.set(key, (routeSum.get(key) || 0) + data.movers[i]);
+  }
+  const stateValues = new Map();
+  for (const s of data.states) {
+    const inV = inSum.get(s) || 0;
+    const outV = outSum.get(s) || 0;
+    stateValues.set(s, mapMode === "in" ? inV : mapMode === "out" ? outV : inV - outV);
+  }
+  const arcs = [...routeSum.entries()]
+    .map(([key, movers]) => {
+      const [from, to] = key.split("→");
+      return { from, to, movers };
+    })
+    .sort((a, b) => b.movers - a.movers)
+    .slice(0, 40);
+
+  const selectedStates = [filters.current_state, filters.prior_state].filter((s) => s !== "all");
+
+  charts.map = flowMapChart(document.getElementById("map-chart"), {
+    stateValues,
+    mode: mapMode,
+    arcs,
+    centroids: geo.centroids,
+    selectedStates,
+    onStateClick: (name) => store.set({ current_state: name }),
+  });
+
+  renderTable(
+    document.getElementById("map-table"),
+    [
+      { label: "Origin", key: "from" },
+      { label: "Destination", key: "to" },
+      { label: "Movers", key: "movers", format: (v) => fmt.format(v) },
+    ],
+    arcs,
+    { onRowClick: (row) => store.set({ prior_state: row.from, current_state: row.to }) }
+  );
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("#map-mode button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#map-mode button").forEach((b) => b.classList.remove("is-on"));
+      btn.classList.add("is-on");
+      mapMode = btn.dataset.value;
+      renderMapPanel(maskIndices(computeMask(data, store.get())), store.get());
+    });
+  });
+});
+
+// ---- "Plan your move" comparison ----
+
+function computeStateSnapshot(stateName) {
+  const idx = data.states.indexOf(stateName);
+  const latest = Math.max(...data.meta.years);
+  let inMovers = 0, outMovers = 0, zhvi = null;
+  for (let i = 0; i < data.length; i++) {
+    if (data.year[i] !== latest) continue;
+    if (data.currentState[i] === idx) {
+      inMovers += data.movers[i];
+      if (zhvi == null && !Number.isNaN(data.currentZhvi[i])) zhvi = data.currentZhvi[i];
+    }
+    if (data.priorState[i] === idx) outMovers += data.movers[i];
+  }
+  return { year: latest, inMovers, outMovers, net: inMovers - outMovers, zhvi };
+}
+
+function renderPlanYourMove() {
+  const fromName = document.getElementById("plan-from").value;
+  const toName = document.getElementById("plan-to").value;
+  const container = document.getElementById("plan-your-move-result");
+  if (!fromName || !toName) {
+    container.innerHTML = "";
+    return;
+  }
+  const from = computeStateSnapshot(fromName);
+  const to = computeStateSnapshot(toName);
+
+  const metrics = [
+    { label: "Home value", from: from.zhvi, to: to.zhvi, format: (v) => (v == null ? "n/a" : fmtMoney0.format(v)) },
+    { label: "Net migration", from: from.net, to: to.net, format: (v) => fmt.format(v) },
+    { label: "People moving in", from: from.inMovers, to: to.inMovers, format: (v) => fmt.format(v) },
+    { label: "People moving out", from: from.outMovers, to: to.outMovers, format: (v) => fmt.format(v) },
+  ];
+
+  const col = (label, tag, snap, other) => `
+    <div class="compare-col">
+      <span class="tag-label">${tag}</span>
+      <h3>${label}</h3>
+      ${metrics
+        .map((m) => {
+          const v = snap === "from" ? m.from : m.to;
+          const ov = snap === "from" ? m.to : m.from;
+          const isHigher = v != null && ov != null && v > ov;
+          return `<div class="compare-row"><span class="metric-label">${m.label}</span><span class="metric-value${isHigher ? " is-higher" : ""}">${m.format(v)}</span></div>`;
+        })
+        .join("")}
+    </div>`;
+
+  container.innerHTML = `
+    <div class="compare-grid">
+      ${col(fromName, "FROM", "from")}
+      <div class="compare-arrows">${icon("truck", 28)}</div>
+      ${col(toName, "TO", "to")}
+    </div>
+    <p class="panel-subtitle" style="margin-top: var(--space-3);">Based on ${from.year} data.</p>`;
+}
+
+// ---- "Surprise me" ----
+
+function surpriseMe() {
+  const routeSum = new Map();
+  for (let i = 0; i < data.length; i++) {
+    const key = `${data.priorState[i]}→${data.currentState[i]}`;
+    routeSum.set(key, (routeSum.get(key) || 0) + data.movers[i]);
+  }
+  const top = [...routeSum.entries()].sort((a, b) => b[1] - a[1]).slice(0, 200);
+  const [key] = top[Math.floor(Math.random() * top.length)];
+  const [origIdx, destIdx] = key.split("→").map(Number);
+  store.set({ prior_state: data.states[origIdx], current_state: data.states[destIdx], year: "all", current_region: "all" });
+  showToast(`Surprise! ${data.states[origIdx]} → ${data.states[destIdx]}`);
+}
+
 // ---- top-level render ----
 
 function render() {
@@ -466,6 +606,7 @@ function render() {
   document.getElementById("selection-count").textContent = `${fmt.format(indices.length)} of ${fmt.format(data.length)} records selected`;
   renderActiveFilters(filters);
   renderKpis(indices, filters);
+  renderMapPanel(indices, filters);
   renderMainPanel(indices, filters);
   renderTrendPanel(indices);
   renderRoutesPanel(indices);
@@ -493,8 +634,9 @@ function buildSegmented(container, values, labelOf) {
 }
 
 async function main() {
-  data = await loadDataset();
+  [data, geo] = await Promise.all([loadDataset(), loadGeoData()]);
   store = createFilterStore(readStateFromUrl());
+  applyIcons();
 
   populateSelect(document.getElementById("filter-year"), data.meta.years, store.get().year);
   populateSelect(document.getElementById("filter-current-state"), data.states, store.get().current_state);
@@ -535,6 +677,18 @@ async function main() {
   wirePanelToolbar("routes");
   wirePanelToolbar("histogram");
   wirePanelToolbar("scatter");
+  wirePanelToolbar("map");
+
+  populateSelect(document.getElementById("plan-from"), data.states, "");
+  populateSelect(document.getElementById("plan-to"), data.states, "");
+  document.getElementById("plan-from").insertAdjacentHTML("afterbegin", '<option value="">Choose a state&hellip;</option>');
+  document.getElementById("plan-to").insertAdjacentHTML("afterbegin", '<option value="">Choose a state&hellip;</option>');
+  document.getElementById("plan-from").value = "";
+  document.getElementById("plan-to").value = "";
+  document.getElementById("plan-from").addEventListener("change", renderPlanYourMove);
+  document.getElementById("plan-to").addEventListener("change", renderPlanYourMove);
+
+  document.getElementById("surprise-me").addEventListener("click", surpriseMe);
 
   store.subscribe(render);
   window.addEventListener("popstate", () => {
