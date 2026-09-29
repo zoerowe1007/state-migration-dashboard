@@ -4,171 +4,33 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Dashboard — State Migration &amp; Cost of Living</title>
-  <meta name="description" content="Filter U.S. state-to-state migration and home value data live in the browser." />
-  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <nav class="site-nav">
+  <!-- Phase 2 structure checkpoint: no design yet (Phase 3), no KPI/panel
+       content yet (Phase 5). This proves data.js + state.js (filters + URL
+       sync) work end-to-end through the new module structure. -->
+  <nav>
     <div class="wrap">
-      <a class="brand" href="index.html">State Migration &amp; Cost of Living</a>
-      <div class="nav-right">
-        <div class="links">
-          <a href="index.html">Report</a>
-          <a href="dashboard.html" class="active">Dashboard</a>
-        </div>
-        <button class="icon-btn" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>
-        </button>
-      </div>
+      <a href="index.html">State Migration &amp; Cost of Living</a>
+      <a href="dashboard.html">Dashboard</a>
     </div>
   </nav>
 
   <main class="wrap">
-    <header class="page-head">
-      <p class="eyebrow">Live in your browser</p>
-      <h1>Explore the data</h1>
-      <p class="summary">
-        Filter 2005&ndash;2024 state-to-state migration flows by year, destination, origin, and region. Every
-        number, chart, and table row below recomputes as you change the filters — click a bar in the first
-        chart to filter by it.
-      </p>
-      <p class="byline" id="loading-note">Loading 50,066 rows…</p>
-    </header>
+    <h1>Dashboard</h1>
+    <p id="selection-count">Loading…</p>
 
-    <div class="filter-bar">
-      <div class="filter-field">
-        <label for="filter-year">Year</label>
-        <select id="filter-year"><option value="all">All years</option></select>
-      </div>
-      <div class="filter-field">
-        <label for="filter-current-state">Destination state</label>
-        <select id="filter-current-state"><option value="all">All states</option></select>
-      </div>
-      <div class="filter-field">
-        <label for="filter-prior-state">Origin state</label>
-        <select id="filter-prior-state"><option value="all">All states</option></select>
-      </div>
-      <div class="filter-field">
-        <label for="filter-region">Destination region</label>
-        <select id="filter-region"><option value="all">All regions</option></select>
-      </div>
-      <button class="btn" id="reset-filters">Reset filters</button>
-    </div>
-
-    <div class="active-filters" id="active-filters" aria-live="polite"></div>
-
-    <section class="stat-grid" aria-label="Summary numbers">
-      <div class="stat-tile">
-        <div class="label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Total movers
-        </div>
-        <div class="value" id="summary-total-movers">&ndash;</div>
-      </div>
-      <div class="stat-tile">
-        <div class="label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M4 19V9l5-4 5 4v10M14 19v-6h5v6"/></svg>
-          Routes in view
-        </div>
-        <div class="value" id="summary-routes">&ndash;</div>
-      </div>
-      <div class="stat-tile">
-        <div class="label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>
-          Median home value (destination)
-        </div>
-        <div class="value" id="summary-median-zhvi">&ndash;</div>
-      </div>
-      <div class="stat-tile">
-        <div class="label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
-          Moved to a cheaper state
-        </div>
-        <div class="value" id="summary-cheaper-rate">&ndash;</div>
-      </div>
-    </section>
-
-    <section class="finding">
-      <h2>Movers by category</h2>
-      <p>Pick a measure and a variable to break it down by, or click a bar to filter by it.</p>
-      <div class="switch-row" id="measure-switch" role="group" aria-label="Measure">
-        <button data-measure="total" class="active">Total movers</button>
-        <button data-measure="count">Number of routes</button>
-        <button data-measure="median_zhvi">Median home value</button>
-        <button data-measure="cheaper_rate">Share to cheaper state</button>
-      </div>
-      <div class="switch-row" id="breakdown-switch" role="group" aria-label="Breakdown">
-        <button data-breakdown="current_state" class="active">By destination state</button>
-        <button data-breakdown="prior_state">By origin state</button>
-        <button data-breakdown="current_region">By region</button>
-        <button data-breakdown="year">By year</button>
-      </div>
-      <div class="chart-card">
-        <div style="height:340px"><canvas id="chart-dashboard-1"></canvas></div>
-      </div>
-    </section>
-
-    <div class="two-col">
-      <section class="finding">
-        <h2>Movers by year</h2>
-        <div class="chart-card">
-          <div style="height:260px"><canvas id="chart-dashboard-2"></canvas></div>
-        </div>
-      </section>
-
-      <section class="finding">
-        <h2>Busiest routes in view</h2>
-        <p class="hint">Click a route to filter to it.</p>
-        <div class="chart-card">
-          <div style="height:260px"><canvas id="chart-dashboard-3"></canvas></div>
-        </div>
-      </section>
-    </div>
-
-    <section class="finding">
-      <h2>Regional composition</h2>
-      <p class="hint">Click a slice to filter by that region.</p>
-      <div class="chart-card">
-        <div style="height:300px"><canvas id="chart-dashboard-4"></canvas></div>
-      </div>
-    </section>
-
-    <section class="finding">
-      <h2>Data behind this view</h2>
-      <p id="table-caption" class="byline"></p>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>Origin</th>
-              <th>Destination</th>
-              <th>Movers</th>
-              <th>MOE</th>
-              <th>Dest. home value</th>
-              <th>Origin home value</th>
-            </tr>
-          </thead>
-          <tbody id="table-body"></tbody>
-        </table>
-      </div>
+    <section aria-label="Filters">
+      <label>Year <select id="filter-year"></select></label>
+      <label>Destination state <select id="filter-current-state"></select></label>
+      <label>Origin state <select id="filter-prior-state"></select></label>
+      <label>Region <select id="filter-region"></select></label>
+      <button id="reset-filters" type="button">Reset filters</button>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap">
-      Data: U.S. Census Bureau (ACS State-to-State Migration Flows) &amp; Zillow Research (ZHVI).
-      All calculations on this page run in your browser.
-    </div>
-  </footer>
-
-  <button class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-  </button>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script src="assets/common.js"></script>
-  <script src="assets/dashboard.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.1.0/echarts.min.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>

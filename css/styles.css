@@ -1,0 +1,18 @@
+/* Structure-only reset for now. Design tokens (colors, fonts, spacing,
+   card/shadow treatment) land in Phase 3 — this file intentionally has no
+   visual design yet. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
