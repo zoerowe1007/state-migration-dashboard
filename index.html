@@ -33,21 +33,22 @@
         <h1>Where Americans move, and what it costs</h1>
         <p class="intro">
           This report covers 50,109 state-to-state migration records from the Census Bureau's American
-          Community Survey (2005&ndash;2024, no 2020 release), paired with Zillow's home value index for
-          every state people left and every state they landed in. About 7.5 million Americans move
-          between states each year, and the flow is lopsided: the South gains people while the Northeast,
-          Midwest and, since 2021, the West lose them. California to Texas is the busiest route, and most
-          movers land in a state with cheaper homes than the one they left, a gap that widened sharply
-          after 2019.
+          Community Survey (2005&ndash;2024, no 2020 release), set beside Zillow home values, federal price
+          parities, Census incomes, mortgage rates and IRS tax data. About 7.5 million Americans move between
+          states each year, and the flow is lopsided: the South gains people while the Northeast, Midwest and,
+          since 2021, the West lose them. California to Texas is the busiest route. Most movers land in a state
+          where housing costs less, and after inflation that price gap is 46% wider than in 2019. Per resident,
+          Vermont, South Carolina and Idaho gain the most and New York loses the most, and the income that
+          moves with people flows overwhelmingly to Florida.
         </p>
         <p class="byline">Prepared by Zoe Rowe for Financial Data Analytics</p>
         <a class="read-link" href="#report">Read the report &darr;</a>
       </div>
       <div class="card hero-kpi">
-        <p class="kpi-label">Movers-weighted home value gap (destination &minus; origin), <span id="headline-year">2024</span></p>
+        <p class="kpi-label">Movers-weighted home value gap (destination &minus; origin), <span id="headline-year">2024</span>, in 2024 dollars</p>
         <p id="headline-number" class="kpi-value" data-countup>&ndash;</p>
         <p style="color: var(--color-text-secondary); font-size: 0.9rem; margin: 0 0 var(--space-3);">
-          The gap between where people move from and where they land &mdash; and it has widened sharply since 2020.
+          The gap between where people move from and where they land &mdash; wider than before the pandemic, even after inflation.
         </p>
         <div id="headline-chart" style="width: 100%; height: 220px;"></div>
       </div>
@@ -158,15 +159,14 @@
     <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
       <p class="stop-label">Stop 6</p>
-      <h2><span class="num">6</span> The price gap between origin and destination has widened by nearly 80% since 2019</h2>
+      <h2><span class="num">6</span> After inflation, the price gap between origin and destination is 46% wider than in 2019</h2>
       <p>
-        The movers-weighted home-value gap (destination minus origin) was <strong>&minus;$10,895 in
-        2019</strong>. By 2021 it had more than doubled to <strong>&minus;$24,899</strong> as remote work
-        spread, and at <strong>&minus;$19,541 in 2024</strong> it is
-        still 79% wider than before the pandemic.
+        The movers-weighted home-value gap (destination minus origin), in 2024 dollars, was <strong>&minus;$13,366
+        in 2019</strong>. By 2021 it had more than doubled to <strong>&minus;$28,822</strong> as remote work
+        spread, and at <strong>&minus;$19,541 in 2024</strong> it is still 46% wider than before the pandemic.
       </p>
       <div class="card chart-card">
-        <div class="chart-title">Movers-weighted home value gap (destination &minus; origin)</div>
+        <div class="chart-title">Movers-weighted home value gap (destination &minus; origin), in 2024 dollars</div>
         <div id="chart-cost-gap" style="height: 280px;"></div>
       </div>
     </section>
@@ -176,21 +176,22 @@
       <p class="stop-label">Stop 7</p>
       <h2><span class="num">7</span> All eight fastest-rising housing markets gained people; six of the eight slowest lost them</h2>
       <p>
-        Since 2005, home values are up <strong>191% in Idaho</strong>, <strong>178% in Utah</strong>, and
-        <strong>174% in Montana</strong>, and all three (along with the other five states in the top eight)
-        gained more people than they lost over the period. At the other end, <strong>Illinois (+37%)</strong>
-        and <strong>Nevada (+41%)</strong> had the slowest price growth of any state with usable data; Illinois
-        lost 1.8 million people net, though Nevada gained 447,000.
+        Since 2005, and after adjusting for inflation (consumer prices rose 61% over that time), home values are up <strong>81% in Idaho</strong> (191% before inflation), <strong>73% in Utah</strong> and
+        <strong>70% in Montana</strong>, and all three (along with the other five states in the top eight)
+        gained more people than they lost over the period. At the other end, prices <em>fell</em> after inflation
+        in <strong>Illinois (&minus;15%)</strong>, <strong>Nevada (&minus;13%)</strong>, Connecticut (&minus;12%) and
+        Maryland (&minus;11%): eight of the 50 places with data for both years are below their 2005 value.
+        Illinois lost 1.8 million people net, though Nevada gained 447,000.
       </p>
       <div class="card chart-card">
-        <div class="chart-title">Home value change in percent, 2005 to 2024 (highest and lowest 8 states)</div>
+        <div class="chart-title">Home value change in percent after inflation, 2005 to 2024 (highest and lowest 8 states)</div>
         <div id="chart-home-value-change" style="height: 380px;"></div>
       </div>
     </section>
 
     <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
-      <p class="stop-label">Stop 8 &mdash; final stop</p>
+      <p class="stop-label">Stop 8</p>
       <h2><span class="num">8</span> Puerto Rico's outflow spiked the year after Hurricane Maria</h2>
       <p>
         Hurricane Maria made landfall in September 2017. In the 2018 survey year that followed,
@@ -203,13 +204,106 @@
       </div>
     </section>
 
+
+    <div class="road-divider" aria-hidden="true"></div>
+    <section class="report-section">
+      <p class="stop-label">Stop 9</p>
+      <h2><span class="num">9</span> Per resident, Vermont and South Carolina gain the most and New York loses the most</h2>
+      <p>
+        Raw counts favor big states, so I divide each state's net migration by its population. Over 2020&ndash;2024,
+        <strong>Vermont gained 13.4 people per 1,000 residents each year</strong>, <strong>South Carolina 12.6</strong>
+        and <strong>Idaho 11.0</strong>. Florida, the biggest winner in raw numbers, ranks only 11th at
+        <strong>7.4 per 1,000</strong>, and Texas 17th at 4.4. At the bottom, <strong>New York lost 10.5 per 1,000</strong>,
+        Illinois 8.6 and California 8.1, ranking 52nd, 51st and 50th of 52 places.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Net migration per 1,000 residents per year, 2020&ndash;2024 (six highest and lowest)</div>
+        <div id="chart-per-capita" style="height: 340px;"></div>
+      </div>
+    </section>
+
+    <div class="road-divider" aria-hidden="true"></div>
+    <section class="report-section">
+      <p class="stop-label">Stop 10</p>
+      <h2><span class="num">10</span> A broader price index agrees: movers land in cheaper states, but only slightly cheaper</h2>
+      <p>
+        Zillow measures only home prices. The Bureau of Economic Analysis's Regional Price Parities also cover rents,
+        goods and services (the U.S. average is 100). By that measure, <strong>54.3% of movers in 2024</strong> went to a
+        state with a lower price level than the one they left, close to the 53.5% found with home values, and the share
+        has stayed between <strong>52.2% and 57.2%</strong> since 2008. The gap is small: the average mover's destination
+        was <strong>0.9 index points cheaper</strong> in 2024 (1.7 in 2021), or 3.4 points on the housing component alone.
+        The parities cover the 50 states and D.C. from 2008 on, and include North Dakota, which Zillow's state index
+        lacks before 2009.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Share of movers headed to a lower-priced state, two measures</div>
+        <div id="chart-rpp-share" style="height: 300px;"></div>
+      </div>
+    </section>
+
+    <div class="road-divider" aria-hidden="true"></div>
+    <section class="report-section">
+      <p class="stop-label">Stop 11</p>
+      <h2><span class="num">11</span> Home prices have outrun incomes: the typical state now costs 4.2 times its median household income</h2>
+      <p>
+        Price alone ignores what people earn. Dividing each state's home value by its median household income gives a
+        price-to-income ratio. For the typical state it was <strong>3.85 in 2005</strong>, fell to 3.20 in 2012, peaked at
+        <strong>4.44 in 2022</strong>, and was <strong>4.17 in 2024</strong>. The spread is wide: Iowa was at 2.64 and
+        Hawaii at 8.59 in 2024, with California at 7.65. Movers drift toward affordability, but only slightly: the average
+        mover's destination had a ratio of <strong>4.57</strong> against <strong>4.70</strong> for where they came from,
+        and 52.7% of movers went to a state with a lower ratio.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Home value divided by median household income</div>
+        <div id="chart-affordability" style="height: 300px;"></div>
+      </div>
+    </section>
+
+    <div class="road-divider" aria-hidden="true"></div>
+    <section class="report-section">
+      <p class="stop-label">Stop 12</p>
+      <h2><span class="num">12</span> Mortgage rates, not prices, pushed monthly housing costs up by more than half since 2021</h2>
+      <p>
+        Price is not what people pay each month. Take the typical state's home value, assume 20% down and a 30-year fixed
+        mortgage at that year's average Freddie Mac rate, and the principal-and-interest payment was
+        <strong>$1,139 in 2021</strong> (in 2024 dollars) and <strong>$1,751 in 2024</strong>, up 54%. The average rate rose
+        from 2.96% to 6.72%; at the 2021 rate, the 2024 price would have cost about $1,135 a month. That payment is now
+        <strong>25.9% of the typical state's median household income</strong>, up from 16.6% in 2021. Typical rent was
+        $1,409 in 2024. Zillow publishes no state-level rent series, so rent here is the average of each state's metro areas,
+        from 2015 on.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Typical monthly cost in 2024 dollars: mortgage payment vs. rent</div>
+        <div id="chart-monthly-cost" style="height: 300px;"></div>
+      </div>
+    </section>
+
+    <div class="road-divider" aria-hidden="true"></div>
+    <section class="report-section">
+      <p class="stop-label">Stop 13 &mdash; final stop</p>
+      <h2><span class="num">13</span> Income moves with people: Florida gained $20.6 billion of income in a year, nearly four times Texas</h2>
+      <p>
+        Census counts people; the IRS also records what they earn. In its 2022&ndash;23 migration file,
+        <strong>6.6 million people changed states, taking $335 billion of adjusted gross income (AGI)</strong> with them.
+        Florida and Texas each gained about 112,000 people, yet <strong>Florida's net gain was $20.6 billion against
+        Texas's $5.5 billion</strong>: the average return moving into Florida reported $122,539 of AGI, against $76,134
+        on the average return leaving Florida. <strong>California lost $11.9 billion</strong> and <strong>New York
+        $9.9 billion</strong>. The IRS counts tax returns, so its totals differ from the Census survey's.
+      </p>
+      <div class="card chart-card">
+        <div class="chart-title">Net adjusted gross income gained or lost through migration, 2022&ndash;23, $ billions (six highest and lowest)</div>
+        <div id="chart-irs-net" style="height: 340px;"></div>
+      </div>
+    </section>
+
     <section class="about-section" id="about-data" aria-labelledby="about-heading">
       <p class="stop-label">Notes</p>
       <h2 id="about-heading">About the data</h2>
       <p class="lede">
-        Every number above comes from one table, <code>data/processed/state_migration_cost_panel.csv</code>,
-        built from two public sources by <code>data/prepare_data.py</code>. The checks in
-        <code>data/validate.py</code> recompute each figure quoted in this report from that file.
+        Every number above comes from one migration table, <code>data/processed/state_migration_cost_panel.csv</code>,
+        built by <code>data/prepare_data.py</code>, plus supplementary tables built by <code>data/prepare_context.py</code>. The checks in
+        <code>data/validate.py</code> recompute each figure quoted in this report from that file and the supplementary tables
+        beside it.
       </p>
       <div class="about-grid">
         <div class="card about-card">
@@ -217,6 +311,13 @@
           <ul>
             <li><strong>Migration:</strong> U.S. Census Bureau, <a href="https://www.census.gov/data/tables/time-series/demo/geographic-mobility/state-to-state-migration.html">State-to-State Migration Flows</a>, American Community Survey 1-year estimates, 2005&ndash;2024. The Census Bureau released no 1-year estimates for 2020, so that year is missing: 19 survey years, and charts connect 2019 straight to 2021.</li>
             <li><strong>Home values:</strong> <a href="https://www.zillow.com/research/data/">Zillow Home Value Index</a> (ZHVI), state level, all homes, smoothed and seasonally adjusted, monthly. I average the twelve months of each calendar year to get one value per state per year.</li>
+            <li><strong>Population:</strong> Census Population Estimates (July 1), three vintages: 2000&ndash;2010 intercensal (2005&ndash;09), Vintage 2019 (2010&ndash;19) and Vintage 2024 (2020&ndash;24).</li>
+            <li><strong>Income:</strong> Census CPS ASEC Historical Table H-8, median household income by state, current dollars. Puerto Rico is not covered.</li>
+            <li><strong>Price levels:</strong> BEA Regional Price Parities (all items and housing), 50 states and D.C., 2008&ndash;2024.</li>
+            <li><strong>Inflation:</strong> annual-average CPI-U (all items, U.S. city average) from the Bureau of Labor Statistics, as tabulated by the Minneapolis Fed.</li>
+            <li><strong>Mortgage rates:</strong> Freddie Mac Primary Mortgage Market Survey, weekly 30-year fixed rate, averaged by calendar year.</li>
+            <li><strong>Rent:</strong> Zillow Observed Rent Index (ZORI), 2015 on. Zillow publishes no state-level series, so each state's value is the plain average of its metro areas' annual ZORI (metros with all twelve months only). D.C. and Puerto Rico have none.</li>
+            <li><strong>Income that moves:</strong> IRS Statistics of Income state-to-state migration files, 2011&ndash;12 through 2022&ndash;23, built from tax returns. The IRS periods run through 2019&ndash;20 and 2020&ndash;21, which the Census survey skipped.</li>
           </ul>
         </div>
         <div class="card about-card">
@@ -231,6 +332,7 @@
             <li><strong>Suppressed or not-applicable cells</strong> (marked N or X in the Census tables): they have no estimate to report.</li>
             <li><strong>Non-state rows</strong> (such as national and regional totals): they would double-count the state rows.</li>
             <li><strong>Missing home values:</strong> Zillow publishes no state index for Puerto Rico, and none for North Dakota before 2009. Those 2,314 rows (4.6%) stay in every migration count but are left out of every home-value figure.</li>
+            <li><strong>Other gaps:</strong> Puerto Rico has no income or price-parity data and no population estimate for 2005&ndash;2009, so it is left out of those figures. In the IRS files I drop the rows for moves from abroad, the national totals, and people who did not move.</li>
           </ul>
         </div>
         <div class="card about-card">
@@ -243,12 +345,19 @@
             <li><strong>Home value gap</strong> = destination index &minus; origin index. The <strong>movers-weighted</strong> gap is &Sigma;(gap &times; movers) &divide; &Sigma;(movers), so a route with more movers counts for more.</li>
             <li><strong>Home value change</strong> = (2024 index &minus; 2005 index) &divide; 2005 index, &times; 100, per state.</li>
             <li><strong>Median destination home value</strong> (dashboard) is the median over records in view; each record counts once, whatever its mover count.</li>
+            <li><strong>Net migration per 1,000 residents</strong> = 1,000 &times; (movers in &minus; movers out) &divide; population, where population is the July 1 estimate of each year counted, and the figure is an annual average over the window.</li>
+            <li><strong>Inflation-adjusted dollars</strong> multiply each year's amount by CPI-U(2024) &divide; CPI-U(that year). A year's own gap is scaled by one factor, so it stays the movers-weighted gap.</li>
+            <li><strong>Price-parity share</strong> is computed like the home-value share, using the all-items Regional Price Parity instead of home value.</li>
+            <li><strong>Price-to-income ratio</strong> = state home value &divide; state median household income. &ldquo;Typical state&rdquo; is the median across the states (and D.C.) that have both; the movers-weighted version weights each route's ratios by movers.</li>
+            <li><strong>Monthly mortgage payment</strong> = principal and interest on a 30-year fixed loan for 80% of the state's home value, at that year's average Freddie Mac rate. It leaves out taxes, insurance and fees.</li>
+            <li><strong>IRS income</strong> is adjusted gross income (AGI) on the returns of people who changed states; net AGI = AGI arriving minus AGI leaving. &ldquo;Average return&rdquo; = total AGI &divide; number of returns.</li>
           </ul>
         </div>
         <div class="card about-card is-wide">
           <h3>Caveats</h3>
           <p>These are survey estimates, not a census of moves. Each route-year carries a 90% margin of error, and for 89% of them it is larger than 30% of the estimate. Those noisy routes are small, though: together they hold 42% of all movers. So every finding above rests on state, region and year totals, which are far more stable than any single route, and the one route I cite (California to Texas, margin of error 12% of its estimate) is well measured. The dashboard's &ldquo;Reliable routes only&rdquo; filter hides the noisy ones, and marks them in gray or faded wherever they appear. Home values are state averages and say nothing about the neighborhoods people actually move between. This report shows association, not cause.</p>
           <p>The 2024 Census table also suppresses 279 small routes (marked N) that earlier years report. They held about 71,000 movers in 2023, roughly 1% of the total, so 2024 is very slightly light. On a like-for-like basis (only routes reported in both years), movers fell 4.8% from 2023 to 2024; the drop is real.</p>
+          <p>A few source quirks: the Census tables show very large outflows from Alaska in 2008&ndash;2014 (72,000 to 100,000 a year, against 33,000 to 50,000 from 2015 on), which I report as published; the Census income table lists two columns for 2013 and for 2017 (footnoted changes in how income was collected or processed), and I use the first-listed column of each; the IRS's 2014&ndash;15 period counts far fewer movers (4.5 million people) than its neighbors (about 6.3 to 6.6 million), so I avoid leaning on it; and the population vintages are not perfectly continuous where they join, in 2010 and 2020.</p>
         </div>
       </div>
     </section>
