@@ -5,6 +5,10 @@ columnar JSON file the browser fetches once and filters entirely in memory
 small integer indices into lookup arrays, so ~50k rows stay small and fast
 to filter with typed arrays.
 
+It also packs the supplementary tables from prepare_context.py into site_data.json
+("context": population, income, price parities, rent, CPI, mortgage rates) and writes the
+IRS state-to-state flows to data/irs_flows.json.
+
 Run with: uv run python data/build_site_data.py
 """
 
@@ -49,6 +53,30 @@ payload = {
     },
 }
 
+# ---- supplementary context (state x year grids, state-major: index = state_index * n_years + year_index) ----
+ctx = pd.read_csv("data/processed/state_year_context.csv")
+yr = pd.read_csv("data/processed/year_context.csv").set_index("year")
+ctx_years = [int(y) for y in yr.index]
+grid = pd.MultiIndex.from_product([states, ctx_years], names=["state", "year"])
+ctx = ctx.set_index(["state", "year"]).reindex(grid)
+
+
+def grid_values(col, round_to=None):
+    return nullable_num(ctx[col], round_to)
+
+
+payload["context"] = {
+    "years": ctx_years,
+    "population": grid_values("population"),
+    "median_income": grid_values("median_income"),
+    "rpp_all": grid_values("rpp_all", 3),
+    "rpp_housing": grid_values("rpp_housing", 3),
+    "rent": grid_values("rent"),
+    "rent_metros": grid_values("rent_metros"),
+    "cpi": [float(v) for v in yr.cpi],
+    "mortgage_rate": [round(float(v), 3) for v in yr.mortgage_rate_30yr],
+}
+
 out_path = "data/site_data.json"
 with open(out_path, "w") as f:
     json.dump(payload, f, separators=(",", ":"))
@@ -57,3 +85,23 @@ import os
 
 size_kb = os.path.getsize(out_path) / 1024
 print(f"wrote {out_path}: {len(df)} rows, {len(states)} states, {len(regions)} regions, {size_kb:.0f} KB")
+
+
+# ---- IRS state-to-state flows (separate file; only the dashboard/report sections that use it fetch it) ----
+irs = pd.read_csv("data/processed/irs_state_flows.csv")
+periods = sorted(irs.period.unique())
+irs_payload = {
+    "meta": {"source": "IRS SOI state-to-state migration (tax returns)", "rows": len(irs), "periods": periods},
+    "lookups": {"states": states},
+    "rows": {
+        "period": [periods.index(p) for p in irs.period],
+        "current_state": [state_index[x] for x in irs.current_state],
+        "prior_state": [state_index[x] for x in irs.prior_state],
+        "returns": [int(v) for v in irs.returns],
+        "people": [int(v) for v in irs.people],
+        "agi_thousands": [int(v) for v in irs.agi_thousands],
+    },
+}
+with open("data/irs_flows.json", "w") as f:
+    json.dump(irs_payload, f, separators=(",", ":"))
+print(f"wrote data/irs_flows.json: {len(irs)} rows, {os.path.getsize('data/irs_flows.json') / 1024:.0f} KB")
