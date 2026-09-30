@@ -32,7 +32,7 @@ export function themeDefaults() {
   return {
     textStyle: { fontFamily: "Inter, system-ui, sans-serif", color: text },
     axisLine: { lineStyle: { color: grid } },
-    axisLabel: { color: text },
+    axisLabel: { color: text, hideOverlap: true },
     splitLine: { lineStyle: { color: grid } },
   };
 }
@@ -92,7 +92,7 @@ export function rankedBarChart(el, entries, { formatValue = (v) => fmt.format(Ma
   setOption(chart, {
     grid: { left: 150, right: 24, top: 8, bottom: 28 },
     textStyle: theme.textStyle,
-    xAxis: { type: "value", axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
+    xAxis: { type: "value", splitNumber: 3, axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
     yAxis: { type: "category", data: entries.map((e) => e[0]), inverse: true, axisLine: theme.axisLine, axisLabel: theme.axisLabel },
     series: [
       {
@@ -202,7 +202,7 @@ export function scatterChart(el, pointsByGroup, { refLine = null, groupOrder = n
     grid: { left: 60, right: 16, top: 32, bottom: 60 },
     textStyle: theme.textStyle,
     legend: { bottom: 0, textStyle: theme.textStyle },
-    xAxis: { type: "value", name: "movers", axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
+    xAxis: { type: "value", name: "movers", splitNumber: 3, axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
     yAxis: { type: "value", name: "home value gap ($)", axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
     series,
     tooltip: {

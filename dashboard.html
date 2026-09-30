@@ -27,7 +27,7 @@
         <p id="selection-count" class="kpi-label">Loading data&hellip;</p>
       </div>
       <div class="actions">
-        <button id="surprise-me" class="btn" type="button"><span class="btn-icon" data-icon="dice"></span> Surprise me</button>
+        <button id="surprise-me" class="btn" type="button"><span class="btn-icon" data-icon="dice" aria-hidden="true"></span> Surprise me</button>
         <button id="copy-link" class="btn" type="button">Copy link to this view</button>
         <button id="reset-filters" class="btn" type="button">Reset filters</button>
       </div>
@@ -61,7 +61,7 @@
         <div class="kpi-delta" id="kpi-delta-total-movers"></div>
       </div>
       <div class="card kpi-card">
-        <div class="kpi-label">Routes in view</div>
+        <div class="kpi-label">Records in view (route &times; year)</div>
         <span id="kpi-routes" class="kpi-value">&ndash;</span>
         <div class="kpi-delta" id="kpi-delta-routes"></div>
       </div>
@@ -76,12 +76,13 @@
         <div class="kpi-delta" id="kpi-delta-cheaper-rate"></div>
       </div>
       <div class="card kpi-card">
-        <div class="kpi-label">Avg. home value gap</div>
+        <div class="kpi-label">Movers-weighted home value gap</div>
         <span id="kpi-avg-gap" class="kpi-value">&ndash;</span>
         <div class="kpi-delta" id="kpi-delta-avg-gap"></div>
       </div>
     </section>
 
+    <div class="dash-split">
     <section aria-label="Migration flow map">
       <div class="controls-row">
         <div class="control-group">
@@ -97,8 +98,8 @@
       <div class="card panel">
         <div class="panel-head">
           <div>
-            <div class="panel-title"><span class="btn-icon" data-icon="truck"></span> Migration flow map</div>
-            <div class="panel-subtitle">The busiest routes in view, drawn as arcs; state color shows who's moving in, out, or the net change. Alaska, Hawaii, and Puerto Rico are shown in their true relative positions.</div>
+            <div class="panel-title"><span class="btn-icon" data-icon="truck" aria-hidden="true"></span> Migration flow map</div>
+            <div class="panel-subtitle">The busiest routes in view, drawn as arcs; state color shows who's moving in, out, or the net change. Alaska and Hawaii are scaled down and shown in insets below the Southwest.</div>
           </div>
           <div class="panel-toolbar" data-panel="map">
             <button data-view="chart" class="is-on">Chart</button>
@@ -106,7 +107,7 @@
             <button data-action="png">PNG</button>
           </div>
         </div>
-        <div class="panel-body" data-view-body="chart"><div id="map-chart" style="height: 460px;"></div></div>
+        <div class="panel-body" data-view-body="chart"><div id="map-chart" style="height: 520px;"></div></div>
         <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="map-table"></table></div></div>
       </div>
     </section>
@@ -114,7 +115,7 @@
     <section aria-label="Plan your move" class="card panel plan-your-move">
       <div class="panel-head">
         <div>
-          <div class="panel-title"><span class="btn-icon" data-icon="house"></span> Plan your move</div>
+          <div class="panel-title"><span class="btn-icon" data-icon="house" aria-hidden="true"></span> Plan your move</div>
           <div class="panel-subtitle">Compare two states head-to-head, using each state's most recent year of data.</div>
         </div>
       </div>
@@ -131,6 +132,7 @@
       </div>
       <div id="plan-your-move-result"></div>
     </section>
+    </div>
 
     <section aria-label="Main chart">
       <div class="controls-row">
@@ -138,8 +140,8 @@
           <span>Measure</span>
           <select id="main-measure">
             <option value="total">Total movers</option>
-            <option value="count">Number of routes</option>
-            <option value="median_zhvi">Median home value</option>
+            <option value="count">Number of records</option>
+            <option value="median_zhvi">Median destination home value</option>
             <option value="cheaper_rate">Share to cheaper state</option>
           </select>
           <span>Break down by</span>
@@ -161,7 +163,7 @@
       <div class="card panel">
         <div class="panel-head">
           <div>
-            <div class="panel-title">Movers by category</div>
+            <div class="panel-title" id="main-title">Total movers by destination state</div>
             <div class="panel-subtitle">When broken down by year, each region gets its own series &mdash; otherwise it's one bar per category.</div>
           </div>
           <div class="panel-toolbar" data-panel="main">
@@ -170,7 +172,7 @@
             <button data-action="png">PNG</button>
           </div>
         </div>
-        <div class="panel-body" data-view-body="chart"><div id="main-chart" style="height: 360px;"></div></div>
+        <div class="panel-body" data-view-body="chart"><div id="main-chart" style="height: 420px;"></div></div>
         <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="main-table"></table></div></div>
       </div>
     </section>
@@ -179,8 +181,8 @@
       <div class="card panel">
         <div class="panel-head">
           <div>
-            <div class="panel-title">Movers by year</div>
-            <div class="panel-subtitle">Total interstate movers in the current filter, each year.</div>
+            <div class="panel-title" id="trend-title">Total movers by year</div>
+            <div class="panel-subtitle" id="trend-subtitle">The measure chosen above, for each year in the current filter.</div>
           </div>
           <div class="panel-toolbar" data-panel="trend">
             <button data-view="chart" class="is-on">Chart</button>
@@ -188,7 +190,7 @@
             <button data-action="png">PNG</button>
           </div>
         </div>
-        <div class="panel-body" data-view-body="chart"><div id="chart-trend" style="height: 260px;"></div></div>
+        <div class="panel-body" data-view-body="chart"><div id="chart-trend" style="height: 320px;"></div></div>
         <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-trend"></table></div></div>
       </div>
 
@@ -204,7 +206,7 @@
             <button data-action="png">PNG</button>
           </div>
         </div>
-        <div class="panel-body" data-view-body="chart"><div id="chart-routes" style="height: 260px;"></div></div>
+        <div class="panel-body" data-view-body="chart"><div id="chart-routes" style="height: 320px;"></div></div>
         <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-routes"></table></div></div>
       </div>
 
@@ -220,7 +222,7 @@
             <button data-action="png">PNG</button>
           </div>
         </div>
-        <div class="panel-body" data-view-body="chart"><div id="chart-histogram" style="height: 260px;"></div></div>
+        <div class="panel-body" data-view-body="chart"><div id="chart-histogram" style="height: 320px;"></div></div>
         <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-histogram"></table></div></div>
       </div>
 
@@ -241,7 +243,7 @@
             <button data-action="png">PNG</button>
           </div>
         </div>
-        <div class="panel-body" data-view-body="chart"><div id="chart-scatter" style="height: 300px;"></div></div>
+        <div class="panel-body" data-view-body="chart"><div id="chart-scatter" style="height: 340px;"></div></div>
         <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-scatter"></table></div></div>
       </div>
     </div>

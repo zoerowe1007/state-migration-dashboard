@@ -10,6 +10,26 @@ const fmtCompact = new Intl.NumberFormat("en-US", { notation: "compact", maximum
 
 let registered = false;
 
+// Alaska and Hawaii sit thousands of miles from the lower 48, and Alaska's
+// Aleutian chain crosses the antimeridian (longitudes down to -189). Drawn in
+// their true positions they stretch the map's bounds so far that the lower 48
+// shrink to a corner. As on most U.S. maps, they are scaled down and moved into
+// insets below the Southwest. Puerto Rico is close enough to stay where it is.
+const INSETS = {
+  Alaska: { from: [-188.9, 51.6], to: [-124.5, 20.8], scale: [0.2, 0.36] },
+  Hawaii: { from: [-159.8, 18.9], to: [-112.0, 21.0], scale: [1.4, 1.4] },
+};
+
+function moveCoords(coords, inset) {
+  if (typeof coords[0] === "number") {
+    return [
+      inset.to[0] + (coords[0] - inset.from[0]) * inset.scale[0],
+      inset.to[1] + (coords[1] - inset.from[1]) * inset.scale[1],
+    ];
+  }
+  return coords.map((c) => moveCoords(c, inset));
+}
+
 export async function loadGeoData() {
   const [geoRes, centroidRes] = await Promise.all([
     fetch("data/geo/us-states.json"),
@@ -17,6 +37,13 @@ export async function loadGeoData() {
   ]);
   const geoJson = await geoRes.json();
   const centroids = await centroidRes.json();
+  for (const feature of geoJson.features) {
+    const inset = INSETS[feature.properties.name];
+    if (inset) feature.geometry.coordinates = moveCoords(feature.geometry.coordinates, inset);
+  }
+  for (const [name, inset] of Object.entries(INSETS)) {
+    if (centroids[name]) centroids[name] = moveCoords(centroids[name], inset);
+  }
   if (!registered) {
     echarts.registerMap("USA", geoJson);
     registered = true;
@@ -66,6 +93,7 @@ export function flowMapChart(el, opts) {
           itemWidth: 12,
           itemHeight: 100,
           textStyle: { color: ink },
+          formatter: (v) => fmtCompact.format(v),
           inRange: { color: [accent, card, gray] },
         }
       : {
@@ -79,6 +107,7 @@ export function flowMapChart(el, opts) {
           itemWidth: 12,
           itemHeight: 100,
           textStyle: { color: ink },
+          formatter: (v) => fmtCompact.format(v),
           inRange: { color: [card, mode === "in" ? gray : accent] },
         };
 

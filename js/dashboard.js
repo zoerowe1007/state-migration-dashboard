@@ -12,8 +12,8 @@ const fmtMoney0 = new Intl.NumberFormat("en-US", { style: "currency", currency: 
 
 const MEASURES = {
   total: { label: "Total movers", format: (v) => fmt.format(Math.round(v)) },
-  count: { label: "Number of routes", format: (v) => fmt.format(Math.round(v)) },
-  median_zhvi: { label: "Median home value", format: (v) => (v == null ? "n/a" : fmtMoney.format(v)) },
+  count: { label: "Number of records", format: (v) => fmt.format(Math.round(v)) },
+  median_zhvi: { label: "Median destination home value", format: (v) => (v == null ? "n/a" : fmtMoney.format(v)) },
   cheaper_rate: { label: "Share to cheaper state", format: (v) => (v == null ? "n/a" : v.toFixed(1) + "%") },
 };
 const BREAKDOWN_FIELD = { current_state: "currentState", prior_state: "priorState", current_region: "currentRegion", year: "year" };
@@ -115,9 +115,9 @@ function renderKpis(indices, filters) {
   const kpis = computeKpis(indices);
   document.getElementById("kpi-total-movers").textContent = fmt.format(kpis.totalMovers);
   document.getElementById("kpi-routes").textContent = fmt.format(kpis.routes);
-  document.getElementById("kpi-median-zhvi").textContent = kpis.medianZhvi == null ? "n/a" : fmtMoney0.format(kpis.medianZhvi);
+  document.getElementById("kpi-median-zhvi").textContent = kpis.medianZhvi == null ? "n/a" : fmtMoney.format(kpis.medianZhvi);
   document.getElementById("kpi-cheaper-rate").textContent = kpis.cheaperRate == null ? "n/a" : kpis.cheaperRate.toFixed(1) + "%";
-  document.getElementById("kpi-avg-gap").textContent = kpis.avgGap == null ? "n/a" : fmtMoney0.format(kpis.avgGap);
+  document.getElementById("kpi-avg-gap").textContent = kpis.avgGap == null ? "n/a" : fmtMoney.format(kpis.avgGap);
 
   renderDeltas(kpis, filters);
 }
@@ -222,7 +222,7 @@ function showEmptyState(panelKey, isEmpty) {
     if (!empty) {
       empty = document.createElement("div");
       empty.className = "empty-state";
-      empty.innerHTML = `<span class="btn-icon">${icon("box", 32)}</span><span>Nothing packed here &mdash; try removing a filter.</span>`;
+      empty.innerHTML = `<span class="btn-icon" aria-hidden="true">${icon("box", 32)}</span><span>Nothing packed here &mdash; try removing a filter.</span>`;
       chartBody.appendChild(empty);
     }
     empty.hidden = false;
@@ -237,6 +237,10 @@ function renderMainPanel(indices, controls) {
   const { measure, breakdown, charttype } = controls;
   const measureInfo = MEASURES[measure];
   const field = BREAKDOWN_FIELD[breakdown];
+  document.getElementById("main-title").textContent =
+    breakdown === "year"
+      ? `${measureInfo.label} by year and region`
+      : `${measureInfo.label} by ${breakdownLabel(breakdown).toLowerCase()}`;
 
   if (breakdown === "year") {
     // one series per region, x-axis = year
@@ -332,19 +336,28 @@ function measureValue(rows, measure) {
 
 // ---- panel: movers by year (fixed line chart) ----
 
-function renderTrendPanel(indices) {
-  const byYear = new Map();
-  for (const i of indices) byYear.set(data.year[i], (byYear.get(data.year[i]) || 0) + data.movers[i]);
-  const series = [...byYear.entries()].sort((a, b) => a[0] - b[0]);
+function renderTrendPanel(indices, measure) {
+  const measureInfo = MEASURES[measure];
+  document.getElementById("trend-title").textContent = `${measureInfo.label} by year`;
+  const rowsByYear = new Map();
+  for (const i of indices) {
+    if (!rowsByYear.has(data.year[i])) rowsByYear.set(data.year[i], []);
+    rowsByYear.get(data.year[i]).push(i);
+  }
+  const series = [...rowsByYear.entries()]
+    .map(([year, rows]) => [year, measureValue(rows, measure)])
+    .filter(([, v]) => v != null)
+    .sort((a, b) => a[0] - b[0]);
   const [accent] = seriesColors();
   charts.trend = lineChart(document.getElementById("chart-trend"), series.length ? series : [[0, 0]], {
     color: accent,
+    formatValue: measureInfo.format,
     onCategoryClick: (y) => store.set({ year: String(y) }),
   });
   renderTable(
     document.getElementById("table-trend"),
-    [{ label: "Year", key: "year" }, { label: "Movers", key: "movers", format: (v) => fmt.format(v) }],
-    series.map(([year, movers]) => ({ year, movers })),
+    [{ label: "Year", key: "year" }, { label: measureInfo.label, key: "value", format: measureInfo.format }],
+    series.map(([year, value]) => ({ year, value })),
     { onRowClick: (row) => store.set({ year: String(row.year) }) }
   );
   showEmptyState("trend", indices.length === 0);
@@ -575,7 +588,7 @@ function renderPlanYourMove() {
   container.innerHTML = `
     <div class="compare-grid">
       ${col(fromName, "FROM", "from")}
-      <div class="compare-arrows">${icon("truck", 28)}</div>
+      <div class="compare-arrows" aria-hidden="true">${icon("truck", 28)}</div>
       ${col(toName, "TO", "to")}
     </div>
     <p class="panel-subtitle" style="margin-top: var(--space-3);">Based on ${from.year} data.</p>`;
@@ -608,7 +621,7 @@ function render() {
   renderKpis(indices, filters);
   renderMapPanel(indices, filters);
   renderMainPanel(indices, filters);
-  renderTrendPanel(indices);
+  renderTrendPanel(indices, filters.measure);
   renderRoutesPanel(indices);
   renderHistogramPanel(indices);
   renderScatterPanel(indices, document.getElementById("scatter-refline").checked);
