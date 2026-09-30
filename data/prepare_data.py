@@ -105,6 +105,10 @@ def parse_tidy_year(path, year):
     body = df.iloc[8:].copy()
     body.columns = ["current_state", "prior_state", "movers", "moe"]
     body = body.dropna(subset=["current_state", "prior_state"])
+    # Some labels carry stray whitespace (e.g. "District of Columbia " as an
+    # origin); without this they fail the isin() check below and are silently lost.
+    body["current_state"] = body["current_state"].astype(str).str.strip()
+    body["prior_state"] = body["prior_state"].astype(str).str.strip()
     body = body[body["current_state"].isin(US_STATES) & body["prior_state"].isin(US_STATES)]
     body = body[body["current_state"] != body["prior_state"]]
 

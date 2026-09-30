@@ -47741,6 +47741,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Alabama,South,California,West,7145,2936.0,235554.0,769946.0
 2024,Alabama,South,Colorado,West,2994,1616.0,235554.0,551960.0
 2024,Alabama,South,Delaware,South,0,213.0,235554.0,391169.0
+2024,Alabama,South,District of Columbia,South,0,213.0,235554.0,602929.0
 2024,Alabama,South,Florida,South,16423,4099.0,235554.0,401843.0
 2024,Alabama,South,Georgia,South,15194,2860.0,235554.0,338451.0
 2024,Alabama,South,Hawaii,West,772,1029.0,235554.0,844819.0
@@ -47787,6 +47788,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Alaska,West,California,West,1950,807.0,366772.0,769946.0
 2024,Alaska,West,Colorado,West,1526,788.0,366772.0,551960.0
 2024,Alaska,West,Delaware,South,0,172.0,366772.0,391169.0
+2024,Alaska,West,District of Columbia,South,0,172.0,366772.0,602929.0
 2024,Alaska,West,Florida,South,1069,680.0,366772.0,401843.0
 2024,Alaska,West,Georgia,South,948,777.0,366772.0,338451.0
 2024,Alaska,West,Hawaii,West,551,318.0,366772.0,844819.0
@@ -47832,6 +47834,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Arizona,West,Colorado,West,10284,2531.0,435517.0,551960.0
 2024,Arizona,West,Connecticut,Northeast,930,916.0,435517.0,409109.0
 2024,Arizona,West,Delaware,South,237,299.0,435517.0,391169.0
+2024,Arizona,West,District of Columbia,South,96,99.0,435517.0,602929.0
 2024,Arizona,West,Florida,South,6929,2734.0,435517.0,401843.0
 2024,Arizona,West,Georgia,South,3218,1467.0,435517.0,338451.0
 2024,Arizona,West,Hawaii,West,1354,990.0,435517.0,844819.0
@@ -47879,6 +47882,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Arkansas,South,California,West,1676,1069.0,216305.0,769946.0
 2024,Arkansas,South,Colorado,West,2030,1052.0,216305.0,551960.0
 2024,Arkansas,South,Connecticut,Northeast,0,213.0,216305.0,409109.0
+2024,Arkansas,South,District of Columbia,South,0,213.0,216305.0,602929.0
 2024,Arkansas,South,Florida,South,4434,1771.0,216305.0,401843.0
 2024,Arkansas,South,Georgia,South,774,809.0,216305.0,338451.0
 2024,Arkansas,South,Hawaii,West,867,676.0,216305.0,844819.0
@@ -47925,6 +47929,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,California,West,Colorado,West,15781,3397.0,769946.0,551960.0
 2024,California,West,Connecticut,Northeast,4853,1483.0,769946.0,409109.0
 2024,California,West,Delaware,South,149,144.0,769946.0,391169.0
+2024,California,West,District of Columbia,South,2128,808.0,769946.0,602929.0
 2024,California,West,Florida,South,15988,3031.0,769946.0,401843.0
 2024,California,West,Georgia,South,6863,2164.0,769946.0,338451.0
 2024,California,West,Hawaii,West,9923,2644.0,769946.0,844819.0
@@ -48066,6 +48071,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Delaware,South,California,West,1439,815.0,391169.0,769946.0
 2024,Delaware,South,Colorado,West,329,324.0,391169.0,551960.0
 2024,Delaware,South,Connecticut,Northeast,258,242.0,391169.0,409109.0
+2024,Delaware,South,District of Columbia,South,526,456.0,391169.0,602929.0
 2024,Delaware,South,Florida,South,1574,1286.0,391169.0,401843.0
 2024,Delaware,South,Georgia,South,1595,1979.0,391169.0,338451.0
 2024,Delaware,South,Hawaii,West,0,208.0,391169.0,844819.0
@@ -48148,6 +48154,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Florida,South,Colorado,West,9951,2110.0,401843.0,551960.0
 2024,Florida,South,Connecticut,Northeast,9767,2747.0,401843.0,409109.0
 2024,Florida,South,Delaware,South,1581,994.0,401843.0,391169.0
+2024,Florida,South,District of Columbia,South,1878,889.0,401843.0,602929.0
 2024,Florida,South,Georgia,South,34388,6124.0,401843.0,338451.0
 2024,Florida,South,Hawaii,West,3966,2243.0,401843.0,844819.0
 2024,Florida,South,Idaho,West,1019,630.0,401843.0,465610.0
@@ -48198,6 +48205,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Georgia,South,Colorado,West,4594,1813.0,338451.0,551960.0
 2024,Georgia,South,Connecticut,Northeast,3760,1767.0,338451.0,409109.0
 2024,Georgia,South,Delaware,South,485,380.0,338451.0,391169.0
+2024,Georgia,South,District of Columbia,South,802,673.0,338451.0,602929.0
 2024,Georgia,South,Florida,South,52371,8290.0,338451.0,401843.0
 2024,Georgia,South,Hawaii,West,620,592.0,338451.0,844819.0
 2024,Georgia,South,Idaho,West,319,369.0,338451.0,465610.0
@@ -48245,6 +48253,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Hawaii,West,Colorado,West,1054,492.0,844819.0,551960.0
 2024,Hawaii,West,Connecticut,Northeast,285,332.0,844819.0,409109.0
 2024,Hawaii,West,Delaware,South,0,193.0,844819.0,391169.0
+2024,Hawaii,West,District of Columbia,South,0,193.0,844819.0,602929.0
 2024,Hawaii,West,Florida,South,4002,1825.0,844819.0,401843.0
 2024,Hawaii,West,Georgia,South,1810,1496.0,844819.0,338451.0
 2024,Hawaii,West,Idaho,West,345,319.0,844819.0,465610.0
@@ -48287,6 +48296,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Idaho,West,Colorado,West,2295,1050.0,465610.0,551960.0
 2024,Idaho,West,Connecticut,Northeast,0,198.0,465610.0,409109.0
 2024,Idaho,West,Delaware,South,0,198.0,465610.0,391169.0
+2024,Idaho,West,District of Columbia,South,0,198.0,465610.0,602929.0
 2024,Idaho,West,Florida,South,1522,742.0,465610.0,401843.0
 2024,Idaho,West,Georgia,South,458,429.0,465610.0,338451.0
 2024,Idaho,West,Hawaii,West,424,247.0,465610.0,844819.0
@@ -48333,6 +48343,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Illinois,Midwest,Colorado,West,3917,1424.0,270707.0,551960.0
 2024,Illinois,Midwest,Connecticut,Northeast,2116,1513.0,270707.0,409109.0
 2024,Illinois,Midwest,Delaware,South,868,1115.0,270707.0,391169.0
+2024,Illinois,Midwest,District of Columbia,South,761,432.0,270707.0,602929.0
 2024,Illinois,Midwest,Florida,South,12751,2882.0,270707.0,401843.0
 2024,Illinois,Midwest,Georgia,South,5242,1896.0,270707.0,338451.0
 2024,Illinois,Midwest,Hawaii,West,375,330.0,270707.0,844819.0
@@ -48469,6 +48480,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Kansas,Midwest,Colorado,West,6987,2091.0,232279.0,551960.0
 2024,Kansas,Midwest,Connecticut,Northeast,306,237.0,232279.0,409109.0
 2024,Kansas,Midwest,Delaware,South,269,432.0,232279.0,391169.0
+2024,Kansas,Midwest,District of Columbia,South,0,189.0,232279.0,602929.0
 2024,Kansas,Midwest,Florida,South,2512,1065.0,232279.0,401843.0
 2024,Kansas,Midwest,Georgia,South,1547,1040.0,232279.0,338451.0
 2024,Kansas,Midwest,Hawaii,West,672,583.0,232279.0,844819.0
@@ -48560,6 +48572,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Louisiana,South,California,West,3544,1536.0,214811.0,769946.0
 2024,Louisiana,South,Colorado,West,2633,1997.0,214811.0,551960.0
 2024,Louisiana,South,Connecticut,Northeast,129,168.0,214811.0,409109.0
+2024,Louisiana,South,District of Columbia,South,145,147.0,214811.0,602929.0
 2024,Louisiana,South,Florida,South,4570,1864.0,214811.0,401843.0
 2024,Louisiana,South,Georgia,South,3919,1695.0,214811.0,338451.0
 2024,Louisiana,South,Hawaii,West,337,304.0,214811.0,844819.0
@@ -48603,6 +48616,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Maine,Northeast,Colorado,West,680,391.0,405465.0,551960.0
 2024,Maine,Northeast,Connecticut,Northeast,1219,640.0,405465.0,409109.0
 2024,Maine,Northeast,Delaware,South,129,111.0,405465.0,391169.0
+2024,Maine,Northeast,District of Columbia,South,341,333.0,405465.0,602929.0
 2024,Maine,Northeast,Florida,South,3192,1282.0,405465.0,401843.0
 2024,Maine,Northeast,Georgia,South,121,135.0,405465.0,338451.0
 2024,Maine,Northeast,Hawaii,West,273,300.0,405465.0,844819.0
@@ -48650,6 +48664,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Maryland,South,Colorado,West,2748,1215.0,419876.0,551960.0
 2024,Maryland,South,Connecticut,Northeast,1813,1316.0,419876.0,409109.0
 2024,Maryland,South,Delaware,South,5781,1822.0,419876.0,391169.0
+2024,Maryland,South,District of Columbia,South,16780,3634.0,419876.0,602929.0
 2024,Maryland,South,Florida,South,9358,2214.0,419876.0,401843.0
 2024,Maryland,South,Georgia,South,5702,2720.0,419876.0,338451.0
 2024,Maryland,South,Hawaii,West,901,1153.0,419876.0,844819.0
@@ -48698,6 +48713,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Massachusetts,Northeast,Colorado,West,3460,2161.0,633126.0,551960.0
 2024,Massachusetts,Northeast,Connecticut,Northeast,9936,1952.0,633126.0,409109.0
 2024,Massachusetts,Northeast,Delaware,South,202,251.0,633126.0,391169.0
+2024,Massachusetts,Northeast,District of Columbia,South,1249,781.0,633126.0,602929.0
 2024,Massachusetts,Northeast,Florida,South,10580,2788.0,633126.0,401843.0
 2024,Massachusetts,Northeast,Georgia,South,3513,1568.0,633126.0,338451.0
 2024,Massachusetts,Northeast,Hawaii,West,497,485.0,633126.0,844819.0
@@ -48742,6 +48758,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Michigan,Midwest,California,West,14005,4112.0,247329.0,769946.0
 2024,Michigan,Midwest,Colorado,West,2043,984.0,247329.0,551960.0
 2024,Michigan,Midwest,Connecticut,Northeast,434,280.0,247329.0,409109.0
+2024,Michigan,Midwest,District of Columbia,South,441,387.0,247329.0,602929.0
 2024,Michigan,Midwest,Florida,South,19282,4668.0,247329.0,401843.0
 2024,Michigan,Midwest,Georgia,South,3948,2418.0,247329.0,338451.0
 2024,Michigan,Midwest,Hawaii,West,272,283.0,247329.0,844819.0
@@ -48792,6 +48809,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Minnesota,Midwest,Colorado,West,3457,1435.0,334603.0,551960.0
 2024,Minnesota,Midwest,Connecticut,Northeast,300,260.0,334603.0,409109.0
 2024,Minnesota,Midwest,Delaware,South,0,157.0,334603.0,391169.0
+2024,Minnesota,Midwest,District of Columbia,South,415,358.0,334603.0,602929.0
 2024,Minnesota,Midwest,Florida,South,5993,1643.0,334603.0,401843.0
 2024,Minnesota,Midwest,Georgia,South,1183,651.0,334603.0,338451.0
 2024,Minnesota,Midwest,Idaho,West,853,546.0,334603.0,465610.0
@@ -48838,6 +48856,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Mississippi,South,California,West,2785,1494.0,191065.0,769946.0
 2024,Mississippi,South,Colorado,West,846,728.0,191065.0,551960.0
 2024,Mississippi,South,Connecticut,Northeast,0,226.0,191065.0,409109.0
+2024,Mississippi,South,District of Columbia,South,0,226.0,191065.0,602929.0
 2024,Mississippi,South,Florida,South,3023,1163.0,191065.0,401843.0
 2024,Mississippi,South,Georgia,South,3210,1580.0,191065.0,338451.0
 2024,Mississippi,South,Hawaii,West,0,226.0,191065.0,844819.0
@@ -48924,6 +48943,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Montana,West,Colorado,West,3002,1368.0,455488.0,551960.0
 2024,Montana,West,Connecticut,Northeast,0,185.0,455488.0,409109.0
 2024,Montana,West,Delaware,South,0,185.0,455488.0,391169.0
+2024,Montana,West,District of Columbia,South,0,185.0,455488.0,602929.0
 2024,Montana,West,Florida,South,1353,942.0,455488.0,401843.0
 2024,Montana,West,Georgia,South,240,217.0,455488.0,338451.0
 2024,Montana,West,Hawaii,West,897,903.0,455488.0,844819.0
@@ -48969,6 +48989,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Nebraska,Midwest,Colorado,West,3680,1097.0,264235.0,551960.0
 2024,Nebraska,Midwest,Connecticut,Northeast,0,175.0,264235.0,409109.0
 2024,Nebraska,Midwest,Delaware,South,98,138.0,264235.0,391169.0
+2024,Nebraska,Midwest,District of Columbia,South,266,359.0,264235.0,602929.0
 2024,Nebraska,Midwest,Florida,South,3970,1955.0,264235.0,401843.0
 2024,Nebraska,Midwest,Georgia,South,720,537.0,264235.0,338451.0
 2024,Nebraska,Midwest,Hawaii,West,197,227.0,264235.0,844819.0
@@ -49015,6 +49036,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Nevada,West,Colorado,West,3886,1832.0,445210.0,551960.0
 2024,Nevada,West,Connecticut,Northeast,832,614.0,445210.0,409109.0
 2024,Nevada,West,Delaware,South,0,236.0,445210.0,391169.0
+2024,Nevada,West,District of Columbia,South,1341,1787.0,445210.0,602929.0
 2024,Nevada,West,Florida,South,6293,2487.0,445210.0,401843.0
 2024,Nevada,West,Georgia,South,2604,1647.0,445210.0,338451.0
 2024,Nevada,West,Hawaii,West,2501,1347.0,445210.0,844819.0
@@ -49061,6 +49083,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,New Hampshire,Northeast,California,West,1710,1143.0,483717.0,769946.0
 2024,New Hampshire,Northeast,Colorado,West,1448,1224.0,483717.0,551960.0
 2024,New Hampshire,Northeast,Connecticut,Northeast,1139,752.0,483717.0,409109.0
+2024,New Hampshire,Northeast,District of Columbia,South,326,287.0,483717.0,602929.0
 2024,New Hampshire,Northeast,Florida,South,3590,1569.0,483717.0,401843.0
 2024,New Hampshire,Northeast,Georgia,South,451,392.0,483717.0,338451.0
 2024,New Hampshire,Northeast,Hawaii,West,498,616.0,483717.0,844819.0
@@ -49095,6 +49118,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,New Jersey,Northeast,Colorado,West,829,480.0,532860.0,551960.0
 2024,New Jersey,Northeast,Connecticut,Northeast,2153,1169.0,532860.0,409109.0
 2024,New Jersey,Northeast,Delaware,South,3347,1138.0,532860.0,391169.0
+2024,New Jersey,Northeast,District of Columbia,South,304,237.0,532860.0,602929.0
 2024,New Jersey,Northeast,Florida,South,12121,3185.0,532860.0,401843.0
 2024,New Jersey,Northeast,Georgia,South,1764,778.0,532860.0,338451.0
 2024,New Jersey,Northeast,Idaho,West,72,85.0,532860.0,465610.0
@@ -49136,6 +49160,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,New Mexico,West,California,West,8699,2726.0,306959.0,769946.0
 2024,New Mexico,West,Colorado,West,3654,1481.0,306959.0,551960.0
 2024,New Mexico,West,Connecticut,Northeast,340,470.0,306959.0,409109.0
+2024,New Mexico,West,District of Columbia,South,0,216.0,306959.0,602929.0
 2024,New Mexico,West,Florida,South,2348,1145.0,306959.0,401843.0
 2024,New Mexico,West,Georgia,South,810,579.0,306959.0,338451.0
 2024,New Mexico,West,Hawaii,West,505,600.0,306959.0,844819.0
@@ -49176,6 +49201,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,New York,Northeast,Colorado,West,7985,3618.0,474063.0,551960.0
 2024,New York,Northeast,Connecticut,Northeast,15160,3301.0,474063.0,409109.0
 2024,New York,Northeast,Delaware,South,603,400.0,474063.0,391169.0
+2024,New York,Northeast,District of Columbia,South,4795,1495.0,474063.0,602929.0
 2024,New York,Northeast,Florida,South,28080,4963.0,474063.0,401843.0
 2024,New York,Northeast,Georgia,South,8252,2319.0,474063.0,338451.0
 2024,New York,Northeast,Hawaii,West,2299,1352.0,474063.0,844819.0
@@ -49225,6 +49251,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,North Carolina,South,Colorado,West,7031,2178.0,336109.0,551960.0
 2024,North Carolina,South,Connecticut,Northeast,4643,2352.0,336109.0,409109.0
 2024,North Carolina,South,Delaware,South,501,618.0,336109.0,391169.0
+2024,North Carolina,South,District of Columbia,South,2078,1773.0,336109.0,602929.0
 2024,North Carolina,South,Florida,South,33591,4724.0,336109.0,401843.0
 2024,North Carolina,South,Georgia,South,19031,4094.0,336109.0,338451.0
 2024,North Carolina,South,Hawaii,West,1704,1356.0,336109.0,844819.0
@@ -49275,6 +49302,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,North Dakota,Midwest,Colorado,West,1372,862.0,265578.0,551960.0
 2024,North Dakota,Midwest,Connecticut,Northeast,165,233.0,265578.0,409109.0
 2024,North Dakota,Midwest,Delaware,South,0,175.0,265578.0,391169.0
+2024,North Dakota,Midwest,District of Columbia,South,0,175.0,265578.0,602929.0
 2024,North Dakota,Midwest,Florida,South,1497,1576.0,265578.0,401843.0
 2024,North Dakota,Midwest,Georgia,South,565,689.0,265578.0,338451.0
 2024,North Dakota,Midwest,Hawaii,West,0,175.0,265578.0,844819.0
@@ -49317,6 +49345,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Ohio,Midwest,Colorado,West,4483,1891.0,230479.0,551960.0
 2024,Ohio,Midwest,Connecticut,Northeast,1348,629.0,230479.0,409109.0
 2024,Ohio,Midwest,Delaware,South,682,378.0,230479.0,391169.0
+2024,Ohio,Midwest,District of Columbia,South,419,303.0,230479.0,602929.0
 2024,Ohio,Midwest,Florida,South,20338,3696.0,230479.0,401843.0
 2024,Ohio,Midwest,Georgia,South,6094,2030.0,230479.0,338451.0
 2024,Ohio,Midwest,Hawaii,West,505,336.0,230479.0,844819.0
@@ -49412,6 +49441,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Oregon,West,Colorado,West,5157,1606.0,498174.0,551960.0
 2024,Oregon,West,Connecticut,Northeast,251,225.0,498174.0,409109.0
 2024,Oregon,West,Delaware,South,0,220.0,498174.0,391169.0
+2024,Oregon,West,District of Columbia,South,311,250.0,498174.0,602929.0
 2024,Oregon,West,Florida,South,2742,1537.0,498174.0,401843.0
 2024,Oregon,West,Georgia,South,240,209.0,498174.0,338451.0
 2024,Oregon,West,Hawaii,West,1604,947.0,498174.0,844819.0
@@ -49456,6 +49486,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Pennsylvania,Northeast,Colorado,West,1796,619.0,273784.0,551960.0
 2024,Pennsylvania,Northeast,Connecticut,Northeast,4704,1560.0,273784.0,409109.0
 2024,Pennsylvania,Northeast,Delaware,South,6665,1696.0,273784.0,391169.0
+2024,Pennsylvania,Northeast,District of Columbia,South,2360,1347.0,273784.0,602929.0
 2024,Pennsylvania,Northeast,Florida,South,25048,7963.0,273784.0,401843.0
 2024,Pennsylvania,Northeast,Georgia,South,5227,2144.0,273784.0,338451.0
 2024,Pennsylvania,Northeast,Hawaii,West,370,344.0,273784.0,844819.0
@@ -49505,6 +49536,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Puerto Rico,Territory,Colorado,West,0,258.0,,551960.0
 2024,Puerto Rico,Territory,Connecticut,Northeast,1154,699.0,,409109.0
 2024,Puerto Rico,Territory,Delaware,South,0,258.0,,391169.0
+2024,Puerto Rico,Territory,District of Columbia,South,0,258.0,,602929.0
 2024,Puerto Rico,Territory,Florida,South,8427,2224.0,,401843.0
 2024,Puerto Rico,Territory,Georgia,South,401,385.0,,338451.0
 2024,Puerto Rico,Territory,Hawaii,West,0,258.0,,844819.0
@@ -49541,6 +49573,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Rhode Island,Northeast,California,West,1959,1072.0,472463.0,769946.0
 2024,Rhode Island,Northeast,Colorado,West,134,148.0,472463.0,551960.0
 2024,Rhode Island,Northeast,Connecticut,Northeast,2786,768.0,472463.0,409109.0
+2024,Rhode Island,Northeast,District of Columbia,South,303,283.0,472463.0,602929.0
 2024,Rhode Island,Northeast,Florida,South,2738,1851.0,472463.0,401843.0
 2024,Rhode Island,Northeast,Georgia,South,768,520.0,472463.0,338451.0
 2024,Rhode Island,Northeast,Hawaii,West,129,160.0,472463.0,844819.0
@@ -49629,6 +49662,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,South Dakota,Midwest,California,West,1983,862.0,306388.0,769946.0
 2024,South Dakota,Midwest,Colorado,West,505,428.0,306388.0,551960.0
 2024,South Dakota,Midwest,Delaware,South,753,854.0,306388.0,391169.0
+2024,South Dakota,Midwest,District of Columbia,South,0,179.0,306388.0,602929.0
 2024,South Dakota,Midwest,Florida,South,652,677.0,306388.0,401843.0
 2024,South Dakota,Midwest,Hawaii,West,134,164.0,306388.0,844819.0
 2024,South Dakota,Midwest,Idaho,West,325,318.0,306388.0,465610.0
@@ -49669,6 +49703,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Tennessee,South,Colorado,West,3980,1698.0,331122.0,551960.0
 2024,Tennessee,South,Connecticut,Northeast,1245,872.0,331122.0,409109.0
 2024,Tennessee,South,Delaware,South,220,296.0,331122.0,391169.0
+2024,Tennessee,South,District of Columbia,South,458,340.0,331122.0,602929.0
 2024,Tennessee,South,Florida,South,18526,3217.0,331122.0,401843.0
 2024,Tennessee,South,Georgia,South,10786,2605.0,331122.0,338451.0
 2024,Tennessee,South,Hawaii,West,1050,960.0,331122.0,844819.0
@@ -49715,6 +49750,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Texas,South,Colorado,West,22986,4909.0,311786.0,551960.0
 2024,Texas,South,Connecticut,Northeast,4022,1402.0,311786.0,409109.0
 2024,Texas,South,Delaware,South,686,486.0,311786.0,391169.0
+2024,Texas,South,District of Columbia,South,2287,1387.0,311786.0,602929.0
 2024,Texas,South,Florida,South,52219,8571.0,311786.0,401843.0
 2024,Texas,South,Georgia,South,19481,3551.0,311786.0,338451.0
 2024,Texas,South,Hawaii,West,4237,2321.0,311786.0,844819.0
@@ -49763,6 +49799,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Utah,West,California,West,13734,3517.0,519034.0,769946.0
 2024,Utah,West,Colorado,West,5224,1404.0,519034.0,551960.0
 2024,Utah,West,Connecticut,Northeast,786,766.0,519034.0,409109.0
+2024,Utah,West,District of Columbia,South,191,177.0,519034.0,602929.0
 2024,Utah,West,Florida,South,3331,1703.0,519034.0,401843.0
 2024,Utah,West,Georgia,South,508,355.0,519034.0,338451.0
 2024,Utah,West,Hawaii,West,2734,2042.0,519034.0,844819.0
@@ -49807,6 +49844,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Vermont,Northeast,Colorado,West,243,205.0,401137.0,551960.0
 2024,Vermont,Northeast,Connecticut,Northeast,909,626.0,401137.0,409109.0
 2024,Vermont,Northeast,Delaware,South,0,170.0,401137.0,391169.0
+2024,Vermont,Northeast,District of Columbia,South,228,306.0,401137.0,602929.0
 2024,Vermont,Northeast,Florida,South,259,183.0,401137.0,401843.0
 2024,Vermont,Northeast,Georgia,South,597,435.0,401137.0,338451.0
 2024,Vermont,Northeast,Idaho,West,405,462.0,401137.0,465610.0
@@ -49849,6 +49887,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Virginia,South,Colorado,West,5064,1519.0,395836.0,551960.0
 2024,Virginia,South,Connecticut,Northeast,2449,964.0,395836.0,409109.0
 2024,Virginia,South,Delaware,South,2342,1050.0,395836.0,391169.0
+2024,Virginia,South,District of Columbia,South,9953,2300.0,395836.0,602929.0
 2024,Virginia,South,Florida,South,24818,3909.0,395836.0,401843.0
 2024,Virginia,South,Georgia,South,9219,3137.0,395836.0,338451.0
 2024,Virginia,South,Hawaii,West,3917,2352.0,395836.0,844819.0
@@ -49898,6 +49937,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Washington,West,Colorado,West,9980,3014.0,592706.0,551960.0
 2024,Washington,West,Connecticut,Northeast,1369,916.0,592706.0,409109.0
 2024,Washington,West,Delaware,South,661,823.0,592706.0,391169.0
+2024,Washington,West,District of Columbia,South,1849,1702.0,592706.0,602929.0
 2024,Washington,West,Florida,South,8419,2973.0,592706.0,401843.0
 2024,Washington,West,Georgia,South,5613,2048.0,592706.0,338451.0
 2024,Washington,West,Hawaii,West,2534,953.0,592706.0,844819.0
@@ -49944,6 +49984,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,West Virginia,South,California,West,1000,810.0,169013.0,769946.0
 2024,West Virginia,South,Colorado,West,260,213.0,169013.0,551960.0
 2024,West Virginia,South,Connecticut,Northeast,500,476.0,169013.0,409109.0
+2024,West Virginia,South,District of Columbia,South,294,11.0,169013.0,602929.0
 2024,West Virginia,South,Florida,South,2474,1419.0,169013.0,401843.0
 2024,West Virginia,South,Georgia,South,1731,1571.0,169013.0,338451.0
 2024,West Virginia,South,Idaho,West,0,206.0,169013.0,465610.0
@@ -49984,6 +50025,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Wisconsin,Midwest,Colorado,West,2372,792.0,308701.0,551960.0
 2024,Wisconsin,Midwest,Connecticut,Northeast,134,179.0,308701.0,409109.0
 2024,Wisconsin,Midwest,Delaware,South,0,161.0,308701.0,391169.0
+2024,Wisconsin,Midwest,District of Columbia,South,127,200.0,308701.0,602929.0
 2024,Wisconsin,Midwest,Florida,South,5624,1397.0,308701.0,401843.0
 2024,Wisconsin,Midwest,Georgia,South,603,458.0,308701.0,338451.0
 2024,Wisconsin,Midwest,Hawaii,West,220,214.0,308701.0,844819.0
@@ -50029,6 +50071,7 @@ year,current_state,current_region,prior_state,prior_region,movers,moe,current_zh
 2024,Wyoming,West,California,West,1957,1419.0,348256.0,769946.0
 2024,Wyoming,West,Colorado,West,5552,2229.0,348256.0,551960.0
 2024,Wyoming,West,Connecticut,Northeast,0,213.0,348256.0,409109.0
+2024,Wyoming,West,District of Columbia,South,0,213.0,348256.0,602929.0
 2024,Wyoming,West,Florida,South,1233,850.0,348256.0,401843.0
 2024,Wyoming,West,Georgia,South,46,4.0,348256.0,338451.0
 2024,Wyoming,West,Idaho,West,223,324.0,348256.0,465610.0
