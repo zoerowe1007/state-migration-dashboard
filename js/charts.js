@@ -85,7 +85,8 @@ export function lineChart(el, series, { color, formatValue = (v) => fmt.format(M
   return chart;
 }
 
-export function rankedBarChart(el, entries, { formatValue = (v) => fmt.format(Math.round(v)), diverging = false, onBarClick } = {}) {
+/** `flags[i]` true draws bar i in the muted "other" gray (used for low-reliability routes). */
+export function rankedBarChart(el, entries, { formatValue = (v) => fmt.format(Math.round(v)), diverging = false, flags = null, onBarClick } = {}) {
   const theme = themeDefaults();
   const [c1, , , c4] = seriesColors();
   const chart = initChart(el);
@@ -98,7 +99,7 @@ export function rankedBarChart(el, entries, { formatValue = (v) => fmt.format(Ma
       {
         type: "bar",
         data: entries.map((e) => e[1]),
-        itemStyle: { color: (p) => (diverging ? (p.value >= 0 ? c1 : c4) : c1), borderRadius: 3 },
+        itemStyle: { color: (p) => (flags && flags[p.dataIndex] ? otherColor() : diverging ? (p.value >= 0 ? c1 : c4) : c1), borderRadius: 3 },
         barMaxWidth: 18,
       },
     ],
@@ -183,10 +184,10 @@ export function scatterChart(el, pointsByGroup, { refLine = null, groupOrder = n
   const series = groups.map((g) => ({
     name: g,
     type: "scatter",
-    data: pointsByGroup[g],
+    // a 6th tuple field of true marks a low-reliability point, drawn faded
+    data: pointsByGroup[g].map((p) => ({ value: p, itemStyle: { opacity: p[5] ? 0.18 : 0.75 } })),
     symbolSize: 5,
     color: colorAt(order.indexOf(g)),
-    itemStyle: { opacity: 0.6 },
   }));
   if (refLine) {
     series.push({
@@ -213,7 +214,7 @@ export function scatterChart(el, pointsByGroup, { refLine = null, groupOrder = n
   chart.off("click");
   if (onPointClick) {
     chart.on("click", (params) => {
-      if (params.seriesType === "scatter") onPointClick(params.data);
+      if (params.seriesType === "scatter") onPointClick(params.value);
     });
     el.style.cursor = "pointer";
   }

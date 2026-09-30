@@ -117,7 +117,7 @@ export function flowMapChart(el, opts) {
     value: a.movers,
     fromName: a.from,
     toName: a.to,
-    lineStyle: { width: 0.6 + (a.movers / maxMovers) * 5 },
+    lineStyle: { width: 0.6 + (a.movers / maxMovers) * 5, opacity: a.unreliable ? 0.1 : 0.4 },
   }));
 
   const pinData = selectedStates.filter((s) => centroids[s]).map((s) => ({ name: s, value: centroids[s] }));

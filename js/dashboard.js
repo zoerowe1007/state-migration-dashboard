@@ -1,5 +1,5 @@
 import { loadDataset } from "./data.js";
-import { createFilterStore, computeMask, maskIndices, readStateFromUrl, DEFAULTS } from "./state.js";
+import { createFilterStore, computeMask, maskIndices, readStateFromUrl, DEFAULTS, isReliable } from "./state.js";
 import { rankedBarChart, lineChart, multiLineChart, multiBarChart, histogramChart, scatterChart, seriesColors } from "./charts.js";
 import { renderTable } from "./tables.js";
 import { downloadChartPng } from "./export.js";
@@ -17,7 +17,9 @@ const MEASURES = {
   cheaper_rate: { label: "Share to cheaper state", format: (v) => (v == null ? "n/a" : v.toFixed(1) + "%") },
 };
 const BREAKDOWN_FIELD = { current_state: "currentState", prior_state: "priorState", current_region: "currentRegion", year: "year" };
-const FILTER_LABELS = { year: "Year", current_state: "Destination", prior_state: "Origin", current_region: "Region" };
+const FILTER_LABELS = { year: "Year", current_state: "Destination", prior_state: "Origin", current_region: "Region", reliable: "Routes" };
+const FILTER_VALUE_TEXT = { reliable: () => "reliable only" };
+const LOW_RELIABILITY = "Low (margin of error > 30%)";
 const REGIONS_ORDERED = ["Northeast", "Midwest", "South", "West", "Territory"];
 
 let data;
@@ -165,7 +167,7 @@ function renderActiveFilters(filters) {
   container.innerHTML = entries
     .map(
       ([key, value]) =>
-        `<span class="chip" data-key="${key}">${FILTER_LABELS[key]}: ${value}
+        `<span class="chip" data-key="${key}">${FILTER_LABELS[key]}: ${FILTER_VALUE_TEXT[key] ? FILTER_VALUE_TEXT[key](value) : value}
           <button type="button" aria-label="Remove ${FILTER_LABELS[key]} filter" data-remove="${key}">&times;</button>
         </span>`
     )
@@ -177,6 +179,7 @@ function renderActiveFilters(filters) {
   syncSelect("filter-year", filters.year);
   syncSelect("filter-current-state", filters.current_state);
   syncSelect("filter-prior-state", filters.prior_state);
+  document.getElementById("filter-reliable").checked = filters.reliable === "yes";
 }
 
 function syncSelect(id, value) {
@@ -366,28 +369,37 @@ function renderTrendPanel(indices, measure) {
 // ---- panel: busiest routes ----
 
 function renderRoutesPanel(indices) {
-  const map = new Map();
+  // Summing estimates: the combined margin of error is the root of the summed squares.
+  const routes = new Map();
   for (const i of indices) {
     const key = `${data.states[data.priorState[i]]} → ${data.states[data.currentState[i]]}`;
-    map.set(key, (map.get(key) || 0) + data.movers[i]);
+    const r = routes.get(key) || { movers: 0, moeSq: 0 };
+    r.movers += data.movers[i];
+    r.moeSq += data.moe[i] ** 2;
+    routes.set(key, r);
   }
-  const top = [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
-  charts.routes = rankedBarChart(document.getElementById("chart-routes"), top, {
-    onBarClick: (label) => {
-      const [origin, destination] = label.split(" → ");
-      store.set({ prior_state: origin, current_state: destination });
-    },
-  });
+  const top = [...routes.entries()].sort((a, b) => b[1].movers - a[1].movers).slice(0, 10);
+  const moeOf = (r) => Math.round(Math.sqrt(r.moeSq));
+  const low = top.map(([, r]) => !isReliable(r.movers, Math.sqrt(r.moeSq)));
+  const goToRoute = (label) => {
+    const [origin, destination] = label.split(" → ");
+    store.set({ prior_state: origin, current_state: destination });
+  };
+  charts.routes = rankedBarChart(
+    document.getElementById("chart-routes"),
+    top.map(([route, r]) => [route, r.movers]),
+    { flags: low, onBarClick: goToRoute }
+  );
   renderTable(
     document.getElementById("table-routes"),
-    [{ label: "Route", key: "route" }, { label: "Movers", key: "movers", format: (v) => fmt.format(v) }],
-    top.map(([route, movers]) => ({ route, movers })),
-    {
-      onRowClick: (row) => {
-        const [origin, destination] = row.route.split(" → ");
-        store.set({ prior_state: origin, current_state: destination });
-      },
-    }
+    [
+      { label: "Route", key: "route" },
+      { label: "Movers", key: "movers", format: (v) => fmt.format(v) },
+      { label: "Margin of error (±)", key: "moe", format: (v) => fmt.format(v) },
+      { label: "Reliability", key: "reliability" },
+    ],
+    top.map(([route, r], n) => ({ route, movers: r.movers, moe: moeOf(r), reliability: low[n] ? LOW_RELIABILITY : "Reliable" })),
+    { onRowClick: (row) => goToRoute(row.route) }
   );
   showEmptyState("routes", indices.length === 0);
 }
@@ -434,13 +446,15 @@ function renderScatterPanel(indices, showRefLine) {
     const gap = data.currentZhvi[i] - data.priorZhvi[i];
     // extra tuple fields (prior state, current state, year) ride along for
     // click-to-filter; ECharts ignores dims beyond x/y for scatter rendering.
-    (pointsByGroup[region] ||= []).push([data.movers[i], Math.round(gap), data.states[data.priorState[i]], data.states[data.currentState[i]], data.year[i]]);
+    (pointsByGroup[region] ||= []).push([data.movers[i], Math.round(gap), data.states[data.priorState[i]], data.states[data.currentState[i]], data.year[i], !isReliable(data.movers[i], data.moe[i])]);
     tableRows.push({
       prior: data.states[data.priorState[i]],
       current: data.states[data.currentState[i]],
       year: data.year[i],
       movers: data.movers[i],
       gap: Math.round(gap),
+      moe: data.moe[i],
+      reliability: isReliable(data.movers[i], data.moe[i]) ? "Reliable" : LOW_RELIABILITY,
     });
   }
   let refLine = null;
@@ -464,6 +478,8 @@ function renderScatterPanel(indices, showRefLine) {
       { label: "Year", key: "year" },
       { label: "Movers", key: "movers", format: (v) => fmt.format(v) },
       { label: "Gap", key: "gap", format: (v) => fmtMoney0.format(v) },
+      { label: "Margin of error (±)", key: "moe", format: (v) => fmt.format(v) },
+      { label: "Reliability", key: "reliability" },
     ],
     tableRows.slice(0, 500),
     { onRowClick: (row) => store.set({ prior_state: row.prior, current_state: row.current, year: String(row.year) }) }
@@ -486,7 +502,10 @@ function renderMapPanel(indices, filters) {
     inSum.set(dest, (inSum.get(dest) || 0) + data.movers[i]);
     outSum.set(orig, (outSum.get(orig) || 0) + data.movers[i]);
     const key = `${orig}→${dest}`;
-    routeSum.set(key, (routeSum.get(key) || 0) + data.movers[i]);
+    const r = routeSum.get(key) || { movers: 0, moeSq: 0 };
+    r.movers += data.movers[i];
+    r.moeSq += data.moe[i] ** 2;
+    routeSum.set(key, r);
   }
   const stateValues = new Map();
   for (const s of data.states) {
@@ -495,9 +514,9 @@ function renderMapPanel(indices, filters) {
     stateValues.set(s, mapMode === "in" ? inV : mapMode === "out" ? outV : inV - outV);
   }
   const arcs = [...routeSum.entries()]
-    .map(([key, movers]) => {
+    .map(([key, r]) => {
       const [from, to] = key.split("→");
-      return { from, to, movers };
+      return { from, to, movers: r.movers, unreliable: !isReliable(r.movers, Math.sqrt(r.moeSq)) };
     })
     .sort((a, b) => b.movers - a.movers)
     .slice(0, 40);
@@ -519,8 +538,9 @@ function renderMapPanel(indices, filters) {
       { label: "Origin", key: "from" },
       { label: "Destination", key: "to" },
       { label: "Movers", key: "movers", format: (v) => fmt.format(v) },
+      { label: "Reliability", key: "reliability" },
     ],
-    arcs,
+    arcs.map((a) => ({ ...a, reliability: a.unreliable ? LOW_RELIABILITY : "Reliable" })),
     { onRowClick: (row) => store.set({ prior_state: row.from, current_state: row.to }) }
   );
 }
@@ -670,6 +690,8 @@ async function main() {
     document.getElementById("main-chart-type").value = DEFAULTS.charttype;
     render();
   });
+
+  document.getElementById("filter-reliable").addEventListener("change", (e) => store.set({ reliable: e.target.checked ? "yes" : "all" }));
 
   document.getElementById("copy-link").addEventListener("click", () => copyLinkToClipboard(location.href));
 

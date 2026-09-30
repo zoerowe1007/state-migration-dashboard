@@ -489,11 +489,23 @@ select {
   gap: 4px;
   max-width: 100%;
 }
-.filter-field label {
+.filter-field label:not(.check-row),
+.filter-field .field-label {
   font-size: 0.8rem;
   color: var(--color-text-secondary);
   font-weight: 500;
 }
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  min-height: 36px;
+  cursor: pointer;
+}
+.check-row input { accent-color: var(--color-accent); width: 16px; height: 16px; }
+.check-hint { color: var(--color-text-secondary); font-size: 0.8rem; }
 
 .active-filters {
   display: flex;

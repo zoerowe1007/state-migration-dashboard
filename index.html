@@ -32,7 +32,7 @@
       <div>
         <h1>Where Americans move, and what it costs</h1>
         <p class="intro">
-          This report covers 50,066 state-to-state migration records from the Census Bureau's American
+          This report covers 50,109 state-to-state migration records from the Census Bureau's American
           Community Survey (2005&ndash;2024, no 2020 release), paired with Zillow's home value index for
           every state people left and every state they landed in. About 7.5 million Americans move
           between states each year, and the flow is lopsided: the South gains people while the Northeast,
@@ -63,7 +63,7 @@
     <div class="card stat-card">
       <p class="kpi-label">Interstate movers in <span class="stat-year">2024</span></p>
       <span class="kpi-value" id="stat-latest" data-countup>&ndash;</span>
-      <p class="stat-note">14% below the 2022 peak of 8.30 million</p>
+      <p class="stat-note">13% below the 2022 peak of 8.30 million</p>
     </div>
     <div class="card stat-card">
       <p class="kpi-label">Movers who moved to a cheaper state, <span class="stat-year">2024</span></p>
@@ -73,7 +73,7 @@
     <div class="card stat-card">
       <p class="kpi-label">Busiest route, <span class="stat-year">2024</span>: <span id="stat-route-name">&ndash;</span></p>
       <span class="kpi-value" id="stat-route" data-countup>&ndash;</span>
-      <p class="stat-note">People who moved that way in one year</p>
+      <p class="stat-note">People who moved that way in one year (margin of error &plusmn;9,059)</p>
     </div>
   </section>
 
@@ -102,7 +102,7 @@
         since 2005, and the direction never changes. The <strong>South has gained a net 8.7 million
         people</strong>; the <strong>Northeast has lost 5.0 million</strong> and the
         <strong>Midwest 2.5 million</strong>. The West has been a net loser every year since 2021, shedding
-        <strong>153,000 people in 2024 alone</strong>.
+        <strong>148,000 people in 2024 alone</strong>.
       </p>
       <div class="card chart-card">
         <div class="chart-title">Net migration by Census region, 2005&ndash;2024</div>
@@ -116,9 +116,9 @@
       <h2><span class="num">3</span> Florida and Texas are the biggest winners; California and New York the biggest losers</h2>
       <p>
         Totaled over 2020&ndash;2024 (four survey years, since 2020 has no data),
-        <strong>Florida gained a net 665,000 people</strong> and <strong>Texas gained 532,000</strong>. On the
+        <strong>Florida gained a net 667,000 people</strong> and <strong>Texas gained 534,000</strong>. On the
         other side, <strong>California lost a net 1.27 million people</strong> and <strong>New York lost
-        840,000</strong>; the two losses are by far the largest, and third-place Illinois lost 438,000.
+        835,000</strong>; the two losses are by far the largest, and third-place Illinois lost 438,000.
       </p>
       <div class="card chart-card">
         <div class="chart-title">Net migration, total 2020&ndash;2024</div>
@@ -131,7 +131,7 @@
       <p class="stop-label">Stop 4</p>
       <h2><span class="num">4</span> California to Texas is the single busiest route in the country</h2>
       <p>
-        In 2024, an estimated <strong>77,161 people moved from California to Texas</strong> &mdash; the
+        In 2024, an estimated <strong>77,161 people (&plusmn;9,059) moved from California to Texas</strong> &mdash; the
         largest flow between any two states, and about 31,700 more than the 45,447 who went the other way.
       </p>
       <div class="card chart-card">
@@ -145,7 +145,7 @@
       <p class="stop-label">Stop 5</p>
       <h2><span class="num">5</span> Most movers are chasing lower housing costs</h2>
       <p>
-        Weight every move by how many people made it, and <strong>53% of movers in 2024 relocated to a
+        Weight every move by how many people made it, and <strong>53.5% of movers in 2024 relocated to a
         state with a lower home value index</strong> than the one they left. That share has held between
         52% and 55% every year since 2005.
       </p>
@@ -158,12 +158,12 @@
     <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
       <p class="stop-label">Stop 6</p>
-      <h2><span class="num">6</span> The price gap between origin and destination has widened by two-thirds since 2019</h2>
+      <h2><span class="num">6</span> The price gap between origin and destination has widened by nearly 80% since 2019</h2>
       <p>
         The movers-weighted home-value gap (destination minus origin) was <strong>&minus;$10,895 in
         2019</strong>. By 2021 it had more than doubled to <strong>&minus;$24,899</strong> as remote work
-        spread, and at <strong>&minus;$18,321 in 2024</strong> it is
-        still 68% wider than before the pandemic.
+        spread, and at <strong>&minus;$19,541 in 2024</strong> it is
+        still 79% wider than before the pandemic.
       </p>
       <div class="card chart-card">
         <div class="chart-title">Movers-weighted home value gap (destination &minus; origin)</div>
@@ -180,7 +180,7 @@
         <strong>174% in Montana</strong>, and all three (along with the other five states in the top eight)
         gained more people than they lost over the period. At the other end, <strong>Illinois (+37%)</strong>
         and <strong>Nevada (+41%)</strong> had the slowest price growth of any state with usable data; Illinois
-        lost 1.8 million people net, though Nevada gained 446,000.
+        lost 1.8 million people net, though Nevada gained 447,000.
       </p>
       <div class="card chart-card">
         <div class="chart-title">Home value change in percent, 2005 to 2024 (highest and lowest 8 states)</div>
@@ -222,7 +222,7 @@
         <div class="card about-card">
           <h3>What one row is</h3>
           <p>One row is one <strong>origin state &rarr; destination state &rarr; survey year</strong>: the estimated number of people (<code>movers</code>) who lived in <code>prior_state</code> a year before the survey and in <code>current_state</code> when surveyed, with its 90% margin of error (<code>moe</code>), both states' Census regions, and both states' home value index that year.</p>
-          <p>The table has <strong>50,066 rows</strong>, 9 columns, 19 years and 52 places (50 states, D.C., Puerto Rico).</p>
+          <p>The table has <strong>50,109 rows</strong>, 9 columns, 19 years and 52 places (50 states, D.C., Puerto Rico).</p>
         </div>
         <div class="card about-card">
           <h3>Rows I drop or leave out, and why</h3>
@@ -230,7 +230,7 @@
             <li><strong>Same-state rows</strong> (people who moved within a state): this report is about moves <em>between</em> states.</li>
             <li><strong>Suppressed or not-applicable cells</strong> (marked N or X in the Census tables): they have no estimate to report.</li>
             <li><strong>Non-state rows</strong> (such as national and regional totals): they would double-count the state rows.</li>
-            <li><strong>Missing home values:</strong> Zillow publishes no state index for Puerto Rico, and none for North Dakota before 2009. Those 2,313 rows (4.6%) stay in every migration count but are left out of every home-value figure.</li>
+            <li><strong>Missing home values:</strong> Zillow publishes no state index for Puerto Rico, and none for North Dakota before 2009. Those 2,314 rows (4.6%) stay in every migration count but are left out of every home-value figure.</li>
           </ul>
         </div>
         <div class="card about-card">
@@ -247,7 +247,8 @@
         </div>
         <div class="card about-card is-wide">
           <h3>Caveats</h3>
-          <p>These are survey estimates, not a census of moves. Each flow carries a margin of error, and small flows are noisy, so read differences of a few thousand movers on a single route with care. Home values are state averages and say nothing about the neighborhoods people actually move between. This report shows association, not cause.</p>
+          <p>These are survey estimates, not a census of moves. Each route-year carries a 90% margin of error, and for 89% of them it is larger than 30% of the estimate. Those noisy routes are small, though: together they hold 42% of all movers. So every finding above rests on state, region and year totals, which are far more stable than any single route, and the one route I cite (California to Texas, margin of error 12% of its estimate) is well measured. The dashboard's &ldquo;Reliable routes only&rdquo; filter hides the noisy ones, and marks them in gray or faded wherever they appear. Home values are state averages and say nothing about the neighborhoods people actually move between. This report shows association, not cause.</p>
+          <p>The 2024 Census table also suppresses 279 small routes (marked N) that earlier years report. They held about 71,000 movers in 2023, roughly 1% of the total, so 2024 is very slightly light. On a like-for-like basis (only routes reported in both years), movers fell 4.8% from 2023 to 2024; the drop is real.</p>
         </div>
       </div>
     </section>

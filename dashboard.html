@@ -50,6 +50,13 @@
         <label id="region-label">Region</label>
         <div class="segmented" id="filter-region" role="group" aria-labelledby="region-label"></div>
       </div>
+      <div class="filter-field">
+        <span class="field-label" id="reliable-label">Route quality</span>
+        <label class="check-row" for="filter-reliable">
+          <input type="checkbox" id="filter-reliable" />
+          Reliable routes only <span class="check-hint">(margin of error &le; 30% of estimate)</span>
+        </label>
+      </div>
     </section>
 
     <div class="active-filters" id="active-filters" aria-live="polite"></div>
@@ -93,7 +100,7 @@
             <button data-value="net">Net change</button>
           </div>
         </div>
-        <div class="hint">Click a state to filter to it. Arc thickness = number of moves.</div>
+        <div class="hint">Click a state to filter to it. Arc thickness = number of moves; faint arcs have a margin of error above 30%.</div>
       </div>
       <div class="card panel">
         <div class="panel-head">
@@ -198,7 +205,7 @@
         <div class="panel-head">
           <div>
             <div class="panel-title">Busiest routes</div>
-            <div class="panel-subtitle">Top 10 origin &rarr; destination flows in view; click a bar to filter to it.</div>
+            <div class="panel-subtitle">Top 10 origin &rarr; destination flows in view; click a bar to filter to it. Gray bars have a margin of error above 30% of the estimate.</div>
           </div>
           <div class="panel-toolbar" data-panel="routes">
             <button data-view="chart" class="is-on">Chart</button>
@@ -231,7 +238,7 @@
           <div>
             <div class="panel-title">Movers vs. cost gap</div>
             <div class="panel-subtitle">
-              Each point is one state-pair-year in view. Sampled to 3,000 points if larger.
+              Each point is one state-pair-year in view; faded points have a margin of error above 30%. Sampled to 3,000 points if larger.
               <label style="display:block; margin-top:4px; font-weight: 500;">
                 <input type="checkbox" id="scatter-refline" /> Show break-even line (gap = $0)
               </label>

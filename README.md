@@ -34,7 +34,7 @@ Analytics data website project.
 | `data/raw/census_migration/` | Raw Census Bureau state-to-state flow tables, one file per year, 2005-2024 (no 2020). |
 | `data/raw/zhvi_state.csv` | Raw Zillow Home Value Index, state level, monthly. |
 | `data/prepare_data.py` | Reads the raw files and writes the panel CSV. |
-| `data/processed/state_migration_cost_panel.csv` | The final panel (50,066 rows, 9 columns). Every number on both pages comes from this file. |
+| `data/processed/state_migration_cost_panel.csv` | The final panel (50,109 rows, 9 columns). Every number on both pages comes from this file. |
 | `data/build_site_data.py` | Converts the panel CSV into the compact `data/site_data.json` the browser loads. |
 | `data/site_data.json` | The panel in column form, with states and regions stored as small integer codes. This is what the two pages fetch. |
 | `data/validate.py` | Recomputes every figure quoted in the report and the dashboard's default numbers from the CSV and prints PASS/FAIL. |
@@ -97,7 +97,7 @@ The table covers 52 places (50 states, D.C., Puerto Rico) and 19 years.
 - **Same-state rows** (people who moved within a state): the project is about moves between states.
 - **Suppressed or not-applicable cells** (N or X in the Census tables): there is no estimate to keep.
 - **Non-state rows** such as national and regional totals: they would double-count the state rows.
-- **Missing home values:** Zillow publishes no state index for Puerto Rico, and none for North Dakota before 2009. Those 2,313 rows (4.6%) stay in every migration count but are excluded from every home-value figure.
+- **Missing home values:** Zillow publishes no state index for Puerto Rico, and none for North Dakota before 2009. Those 2,314 rows (4.6%) stay in every migration count but are excluded from every home-value figure.
 
 ### How the rates and averages are computed
 
