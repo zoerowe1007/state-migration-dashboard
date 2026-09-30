@@ -77,11 +77,15 @@ export function flowMapChart(el, opts) {
   const accent = cssVar("--color-accent");
   const gray = cssVar("--chart-2");
 
-  const values = [...stateValues.entries()].map(([name, value]) => ({ name, value }));
+  // The per-1,000 mode has outliers (Alaska is far beyond every other state), which would wash the
+  // color scale out. Color is clamped at the 90th-percentile magnitude; the tooltip keeps the true value.
+  const absSorted = [...stateValues.values()].map(Math.abs).sort((a, b) => a - b);
+  const cap = mode === "rate" && absSorted.length ? Math.max(1, absSorted[Math.floor(absSorted.length * 0.9)]) : Infinity;
+  const values = [...stateValues.entries()].map(([name, value]) => ({ name, value: Math.max(-cap, Math.min(cap, value)) }));
   const maxAbs = Math.max(1, ...values.map((v) => Math.abs(v.value)));
 
   const visualMap =
-    mode === "net"
+    mode === "net" || mode === "rate"
       ? {
           type: "continuous",
           min: -maxAbs,
@@ -133,9 +137,10 @@ export function flowMapChart(el, opts) {
         formatter: (p) => {
           if (p.componentSubType === "map") {
             const v = stateValues.get(p.name);
-            const label = mode === "net" ? "Net change" : mode === "in" ? "Moving in" : "Moving out";
+            const label = { net: "Net change", rate: "Net per 1,000 residents", in: "Moving in", out: "Moving out" }[mode];
             const extra = postcardExtra ? postcardExtra(p.name) : "";
-            return `<strong>Greetings from ${p.name}!</strong><br/>${label}: ${v == null ? "n/a" : fmt.format(Math.round(v))}${extra}`;
+            const shown = v == null ? "n/a" : mode === "rate" ? v.toFixed(1) : fmt.format(Math.round(v));
+            return `<strong>Greetings from ${p.name}!</strong><br/>${label}: ${shown}${extra}`;
           }
           if (p.componentSubType === "lines") {
             return `${p.data.fromName} → ${p.data.toName}<br/>${fmt.format(p.data.value)} movers`;

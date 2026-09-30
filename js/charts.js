@@ -109,7 +109,7 @@ export function rankedBarChart(el, entries, { formatValue = (v) => fmt.format(Ma
   return chart;
 }
 
-export function multiLineChart(el, categories, seriesByLabel, { onCategoryClick } = {}) {
+export function multiLineChart(el, categories, seriesByLabel, { onCategoryClick, yAxisFormatter } = {}) {
   const theme = themeDefaults();
   const colors = seriesColors();
   const chart = initChart(el);
@@ -118,7 +118,7 @@ export function multiLineChart(el, categories, seriesByLabel, { onCategoryClick 
     textStyle: theme.textStyle,
     legend: { bottom: 0, textStyle: theme.textStyle },
     xAxis: { type: "category", data: categories, axisLine: theme.axisLine, axisLabel: theme.axisLabel },
-    yAxis: { type: "value", axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: (v) => fmtCompact.format(v) }, splitLine: theme.splitLine },
+    yAxis: { type: "value", axisLine: theme.axisLine, axisLabel: { ...theme.axisLabel, formatter: yAxisFormatter || ((v) => fmtCompact.format(v)) }, splitLine: theme.splitLine },
     series: Object.entries(seriesByLabel).map(([label, data], i) => ({
       name: label,
       type: "line",
@@ -127,7 +127,7 @@ export function multiLineChart(el, categories, seriesByLabel, { onCategoryClick 
       lineStyle: { width: 2 },
       symbol: "none",
     })),
-    tooltip: { trigger: "axis" },
+    tooltip: { trigger: "axis", ...(yAxisFormatter && { valueFormatter: (v) => (v == null ? "n/a" : yAxisFormatter(v)) }) },
   });
   wireClick(chart, el, (idx) => onCategoryClick && onCategoryClick(categories[idx]));
   return chart;

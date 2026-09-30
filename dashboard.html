@@ -51,6 +51,13 @@
         <div class="segmented" id="filter-region" role="group" aria-labelledby="region-label"></div>
       </div>
       <div class="filter-field">
+        <span class="field-label" id="dollars-label">Dollar amounts</span>
+        <div class="segmented" id="filter-dollars" role="group" aria-labelledby="dollars-label">
+          <button type="button" data-value="nominal" class="is-on">As reported</button>
+          <button type="button" data-value="real">2024 dollars</button>
+        </div>
+      </div>
+      <div class="filter-field">
         <span class="field-label" id="reliable-label">Route quality</span>
         <label class="check-row" for="filter-reliable">
           <input type="checkbox" id="filter-reliable" />
@@ -73,7 +80,7 @@
         <div class="kpi-delta" id="kpi-delta-routes"></div>
       </div>
       <div class="card kpi-card">
-        <div class="kpi-label">Median destination home value</div>
+        <div class="kpi-label" data-dollar-label>Median destination home value</div>
         <span id="kpi-median-zhvi" class="kpi-value">&ndash;</span>
         <div class="kpi-delta" id="kpi-delta-median-zhvi"></div>
       </div>
@@ -83,7 +90,7 @@
         <div class="kpi-delta" id="kpi-delta-cheaper-rate"></div>
       </div>
       <div class="card kpi-card">
-        <div class="kpi-label">Movers-weighted home value gap</div>
+        <div class="kpi-label" data-dollar-label>Movers-weighted home value gap</div>
         <span id="kpi-avg-gap" class="kpi-value">&ndash;</span>
         <div class="kpi-delta" id="kpi-delta-avg-gap"></div>
       </div>
@@ -98,6 +105,7 @@
             <button data-value="in" class="is-on">Moving in</button>
             <button data-value="out">Moving out</button>
             <button data-value="net">Net change</button>
+            <button data-value="rate">Net per 1,000 residents</button>
           </div>
         </div>
         <div class="hint">Click a state to filter to it. Arc thickness = number of moves; faint arcs have a margin of error above 30%.</div>
@@ -254,6 +262,67 @@
         <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-scatter"></table></div></div>
       </div>
     </div>
+
+    <section aria-label="Across states">
+      <div class="controls-row">
+        <div class="control-group"><strong>Across states</strong></div>
+        <div class="hint">These two panels summarize each state, so they follow the Year filter and the 2024-dollars switch only.</div>
+      </div>
+      <div class="panel-grid" style="margin-top: 0;">
+        <div class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title" id="percap-title">Net migration per 1,000 residents</div>
+              <div class="panel-subtitle" id="percap-subtitle">Annual average, so big and small states compare fairly.</div>
+              <div class="control-group" style="margin-top: 4px;">
+                <label for="percap-metric">Show</label>
+                <select id="percap-metric">
+                  <option value="net">Net migration</option>
+                  <option value="in">Moving in</option>
+                  <option value="out">Moving out</option>
+                </select>
+              </div>
+            </div>
+            <div class="panel-toolbar" data-panel="percap">
+              <button data-view="chart" class="is-on">Chart</button>
+              <button data-view="table">Table</button>
+              <button data-action="png">PNG</button>
+            </div>
+          </div>
+          <div class="panel-body" data-view-body="chart"><div id="chart-percap" style="height: 380px;"></div></div>
+          <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-percap"></table></div></div>
+        </div>
+
+        <div class="card panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title" id="cost-title">Home value by state</div>
+              <div class="panel-subtitle" id="cost-subtitle">Highest and lowest ten states.</div>
+              <div class="control-group" style="margin-top: 4px;">
+                <label for="cost-metric">Show</label>
+                <select id="cost-metric">
+                  <option value="home_value">Home value (Zillow)</option>
+                  <option value="price_income">Home value &divide; household income</option>
+                  <option value="rpp_all">Price level, all items (BEA, U.S. = 100)</option>
+                  <option value="rpp_housing">Price level, housing (BEA, U.S. = 100)</option>
+                  <option value="payment">Monthly mortgage payment</option>
+                  <option value="payment_share">Mortgage payment as % of income</option>
+                  <option value="rent">Typical rent (Zillow, metro average)</option>
+                  <option value="income">Median household income</option>
+                </select>
+              </div>
+            </div>
+            <div class="panel-toolbar" data-panel="cost">
+              <button data-view="chart" class="is-on">Chart</button>
+              <button data-view="table">Table</button>
+              <button data-action="png">PNG</button>
+            </div>
+          </div>
+          <div class="panel-body" data-view-body="chart"><div id="chart-cost" style="height: 380px;"></div></div>
+          <div class="panel-body is-hidden" data-view-body="table"><div class="table-scroll"><table class="data-table" id="table-cost"></table></div></div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

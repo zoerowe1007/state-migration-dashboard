@@ -5,6 +5,7 @@ import { renderTable } from "./tables.js";
 import { downloadChartPng } from "./export.js";
 import { loadGeoData, flowMapChart } from "./map.js";
 import { icon, applyIcons } from "./icons.js";
+import { monthlyPayment } from "./context.js";
 
 const fmt = new Intl.NumberFormat("en-US");
 const fmtMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -25,6 +26,12 @@ const REGIONS_ORDERED = ["Northeast", "Midwest", "South", "West", "Territory"];
 let data;
 let store;
 const charts = {}; // panelKey -> ECharts instance
+
+// "2024 dollars" switch: when on, every dollar amount is restated with CPI-U so years can be compared.
+let dollarsReal = false;
+let zhviLookup; // state index -> Map(year -> ZHVI), one value per state-year
+const dollars = (value, i) => (dollarsReal ? value * data.context.realFactor(data.year[i]) : value);
+const moneyLabel = (label) => (dollarsReal ? `${label} (2024 $)` : label);
 
 // ---- small utilities ----
 
@@ -96,9 +103,9 @@ function computeKpis(indices) {
   let gapWeighted = 0, gapMovers = 0, cheaperMovers = 0;
   for (const i of indices) {
     totalMovers += data.movers[i];
-    if (!Number.isNaN(data.currentZhvi[i])) zhviVals.push(data.currentZhvi[i]);
+    if (!Number.isNaN(data.currentZhvi[i])) zhviVals.push(dollars(data.currentZhvi[i], i));
     if (!Number.isNaN(data.currentZhvi[i]) && !Number.isNaN(data.priorZhvi[i])) {
-      const gap = data.currentZhvi[i] - data.priorZhvi[i];
+      const gap = dollars(data.currentZhvi[i] - data.priorZhvi[i], i);
       gapWeighted += gap * data.movers[i];
       gapMovers += data.movers[i];
       if (gap < 0) cheaperMovers += data.movers[i];
@@ -242,8 +249,8 @@ function renderMainPanel(indices, controls) {
   const field = BREAKDOWN_FIELD[breakdown];
   document.getElementById("main-title").textContent =
     breakdown === "year"
-      ? `${measureInfo.label} by year and region`
-      : `${measureInfo.label} by ${breakdownLabel(breakdown).toLowerCase()}`;
+      ? `${moneyLabelFor(measure)} by year and region`
+      : `${moneyLabelFor(measure)} by ${breakdownLabel(breakdown).toLowerCase()}`;
 
   if (breakdown === "year") {
     // one series per region, x-axis = year
@@ -305,6 +312,11 @@ function renderMainPanel(indices, controls) {
   showEmptyState("main", indices.length === 0);
 }
 
+/** Measure label, marked when the value is a dollar amount shown in 2024 dollars. */
+function moneyLabelFor(measure) {
+  return measure === "median_zhvi" ? moneyLabel(MEASURES[measure].label) : MEASURES[measure].label;
+}
+
 function breakdownLabel(breakdown) {
   return { current_state: "Destination state", prior_state: "Origin state", current_region: "Region", year: "Year" }[breakdown];
 }
@@ -324,7 +336,7 @@ function measureValue(rows, measure) {
   if (!rows.length) return measure === "median_zhvi" || measure === "cheaper_rate" ? null : 0;
   if (measure === "total") return rows.reduce((s, i) => s + data.movers[i], 0);
   if (measure === "count") return rows.length;
-  if (measure === "median_zhvi") return median(rows.map((i) => data.currentZhvi[i]).filter((v) => !Number.isNaN(v)));
+  if (measure === "median_zhvi") return median(rows.filter((i) => !Number.isNaN(data.currentZhvi[i])).map((i) => dollars(data.currentZhvi[i], i)));
   if (measure === "cheaper_rate") {
     let m = 0, cheaper = 0;
     for (const i of rows) {
@@ -341,7 +353,7 @@ function measureValue(rows, measure) {
 
 function renderTrendPanel(indices, measure) {
   const measureInfo = MEASURES[measure];
-  document.getElementById("trend-title").textContent = `${measureInfo.label} by year`;
+  document.getElementById("trend-title").textContent = `${moneyLabelFor(measure)} by year`;
   const rowsByYear = new Map();
   for (const i of indices) {
     if (!rowsByYear.has(data.year[i])) rowsByYear.set(data.year[i], []);
@@ -410,7 +422,7 @@ function renderHistogramPanel(indices) {
   const gaps = [];
   for (const i of indices) {
     if (Number.isNaN(data.currentZhvi[i]) || Number.isNaN(data.priorZhvi[i])) continue;
-    gaps.push(data.currentZhvi[i] - data.priorZhvi[i]);
+    gaps.push(dollars(data.currentZhvi[i] - data.priorZhvi[i], i));
   }
   let bins = [];
   if (gaps.length) {
@@ -443,7 +455,7 @@ function renderScatterPanel(indices, showRefLine) {
   for (const i of sampled) {
     if (Number.isNaN(data.currentZhvi[i]) || Number.isNaN(data.priorZhvi[i])) continue;
     const region = data.regions[data.currentRegion[i]];
-    const gap = data.currentZhvi[i] - data.priorZhvi[i];
+    const gap = dollars(data.currentZhvi[i] - data.priorZhvi[i], i);
     // extra tuple fields (prior state, current state, year) ride along for
     // click-to-filter; ECharts ignores dims beyond x/y for scatter rendering.
     (pointsByGroup[region] ||= []).push([data.movers[i], Math.round(gap), data.states[data.priorState[i]], data.states[data.currentState[i]], data.year[i], !isReliable(data.movers[i], data.moe[i])]);
@@ -495,12 +507,17 @@ let mapMode = "in";
 function renderMapPanel(indices, filters) {
   if (!geo) return; // geo data still loading
   const inSum = new Map(), outSum = new Map();
+  const rateIn = new Map(), rateOut = new Map(); // same sums, but only in years where the state has a population estimate
+  const yearsInView = new Set();
   const routeSum = new Map();
   for (const i of indices) {
     const dest = data.states[data.currentState[i]];
     const orig = data.states[data.priorState[i]];
     inSum.set(dest, (inSum.get(dest) || 0) + data.movers[i]);
     outSum.set(orig, (outSum.get(orig) || 0) + data.movers[i]);
+    yearsInView.add(data.year[i]);
+    if (Number.isFinite(data.context.population(data.currentState[i], data.year[i]))) rateIn.set(dest, (rateIn.get(dest) || 0) + data.movers[i]);
+    if (Number.isFinite(data.context.population(data.priorState[i], data.year[i]))) rateOut.set(orig, (rateOut.get(orig) || 0) + data.movers[i]);
     const key = `${orig}→${dest}`;
     const r = routeSum.get(key) || { movers: 0, moeSq: 0 };
     r.movers += data.movers[i];
@@ -508,11 +525,20 @@ function renderMapPanel(indices, filters) {
     routeSum.set(key, r);
   }
   const stateValues = new Map();
-  for (const s of data.states) {
+  data.states.forEach((s, idx) => {
     const inV = inSum.get(s) || 0;
     const outV = outSum.get(s) || 0;
-    stateValues.set(s, mapMode === "in" ? inV : mapMode === "out" ? outV : inV - outV);
-  }
+    if (mapMode === "rate") {
+      let population = 0;
+      for (const y of yearsInView) {
+        const p = data.context.population(idx, y);
+        if (Number.isFinite(p)) population += p;
+      }
+      stateValues.set(s, population > 0 ? (1000 * ((rateIn.get(s) || 0) - (rateOut.get(s) || 0))) / population : 0);
+    } else {
+      stateValues.set(s, mapMode === "in" ? inV : mapMode === "out" ? outV : inV - outV);
+    }
+  });
   const arcs = [...routeSum.entries()]
     .map(([key, r]) => {
       const [from, to] = key.split("→");
@@ -560,6 +586,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function computeStateSnapshot(stateName) {
   const idx = data.states.indexOf(stateName);
+  const ctx = data.context;
   const latest = Math.max(...data.meta.years);
   let inMovers = 0, outMovers = 0, zhvi = null;
   for (let i = 0; i < data.length; i++) {
@@ -570,7 +597,23 @@ function computeStateSnapshot(stateName) {
     }
     if (data.priorState[i] === idx) outMovers += data.movers[i];
   }
-  return { year: latest, inMovers, outMovers, net: inMovers - outMovers, zhvi };
+  const population = ctx.population(idx, latest);
+  const income = ctx.income(idx, latest);
+  const payment = zhvi == null ? NaN : monthlyPayment(zhvi, ctx.mortgageRate(latest));
+  return {
+    year: latest,
+    inMovers,
+    outMovers,
+    net: inMovers - outMovers,
+    zhvi,
+    perThousand: (1000 * (inMovers - outMovers)) / population,
+    income,
+    priceIncome: zhvi == null ? NaN : zhvi / income,
+    rpp: ctx.rppAll(idx, latest),
+    rent: ctx.rent(idx, latest),
+    payment,
+    paymentShare: (payment * 12 * 100) / income,
+  };
 }
 
 function renderPlanYourMove() {
@@ -584,11 +627,20 @@ function renderPlanYourMove() {
   const from = computeStateSnapshot(fromName);
   const to = computeStateSnapshot(toName);
 
+  const fmtOr = (f) => (v) => (v == null || !Number.isFinite(v) ? "n/a" : f(v));
+  const money = fmtOr((v) => fmtMoney.format(v));
   const metrics = [
-    { label: "Home value", from: from.zhvi, to: to.zhvi, format: (v) => (v == null ? "n/a" : fmtMoney0.format(v)) },
-    { label: "Net migration", from: from.net, to: to.net, format: (v) => fmt.format(v) },
-    { label: "People moving in", from: from.inMovers, to: to.inMovers, format: (v) => fmt.format(v) },
-    { label: "People moving out", from: from.outMovers, to: to.outMovers, format: (v) => fmt.format(v) },
+    { label: "Home value", from: from.zhvi, to: to.zhvi, format: money },
+    { label: "Median household income", from: from.income, to: to.income, format: money },
+    { label: "Home value \u00f7 income", from: from.priceIncome, to: to.priceIncome, format: fmtOr((v) => v.toFixed(2)) },
+    { label: "Monthly mortgage payment", from: from.payment, to: to.payment, format: money },
+    { label: "Mortgage payment, % of income", from: from.paymentShare, to: to.paymentShare, format: fmtOr((v) => v.toFixed(1) + "%") },
+    { label: "Typical rent", from: from.rent, to: to.rent, format: money },
+    { label: "Price level (U.S. = 100)", from: from.rpp, to: to.rpp, format: fmtOr((v) => v.toFixed(1)) },
+    { label: "Net migration", from: from.net, to: to.net, format: fmtOr((v) => fmt.format(v)) },
+    { label: "Net per 1,000 residents", from: from.perThousand, to: to.perThousand, format: fmtOr((v) => v.toFixed(1)) },
+    { label: "People moving in", from: from.inMovers, to: to.inMovers, format: fmtOr((v) => fmt.format(v)) },
+    { label: "People moving out", from: from.outMovers, to: to.outMovers, format: fmtOr((v) => fmt.format(v)) },
   ];
 
   const col = (label, tag, snap, other) => `
@@ -611,7 +663,7 @@ function renderPlanYourMove() {
       <div class="compare-arrows" aria-hidden="true">${icon("truck", 28)}</div>
       ${col(toName, "TO", "to")}
     </div>
-    <p class="panel-subtitle" style="margin-top: var(--space-3);">Based on ${from.year} data.</p>`;
+    <p class="panel-subtitle" style="margin-top: var(--space-3);">Based on ${from.year} data. Mortgage payment assumes 20% down and a 30-year fixed loan at the year\u2019s average Freddie Mac rate; rent is the average of the state\u2019s metro areas.</p>`;
 }
 
 // ---- "Surprise me" ----
@@ -629,6 +681,146 @@ function surpriseMe() {
   showToast(`Surprise! ${data.states[origIdx]} → ${data.states[destIdx]}`);
 }
 
+// ---- panel: migration per 1,000 residents ----
+
+const PERCAP_TITLES = { net: "Net migration per 1,000 residents", in: "Movers arriving per 1,000 residents", out: "Movers leaving per 1,000 residents" };
+
+/** Per-state moves in and out, and population, for the selected year (or every survey year: an annual average). */
+function stateRates(filters) {
+  const ctx = data.context;
+  const years = filters.year === "all" ? data.meta.years : [Number(filters.year)];
+  const yearSet = new Set(years);
+  const n = data.states.length;
+  const inSum = new Float64Array(n), outSum = new Float64Array(n), popSum = new Float64Array(n), popYears = new Float64Array(n);
+  // Each state's moves count only in years where its population estimate exists.
+  for (let i = 0; i < data.length; i++) {
+    const y = data.year[i];
+    if (!yearSet.has(y)) continue;
+    const dest = data.currentState[i], orig = data.priorState[i];
+    if (Number.isFinite(ctx.population(dest, y))) inSum[dest] += data.movers[i];
+    if (Number.isFinite(ctx.population(orig, y))) outSum[orig] += data.movers[i];
+  }
+  for (let s = 0; s < n; s++) {
+    for (const y of years) {
+      const p = ctx.population(s, y);
+      if (Number.isFinite(p)) {
+        popSum[s] += p;
+        popYears[s] += 1;
+      }
+    }
+  }
+  const rows = [];
+  for (let s = 0; s < n; s++) {
+    if (popSum[s] <= 0) continue;
+    rows.push({
+      state: data.states[s],
+      population: Math.round(popSum[s] / popYears[s]),
+      inMovers: Math.round(inSum[s] / popYears[s]),
+      outMovers: Math.round(outSum[s] / popYears[s]),
+      net: Math.round((inSum[s] - outSum[s]) / popYears[s]),
+      inRate: (1000 * inSum[s]) / popSum[s],
+      outRate: (1000 * outSum[s]) / popSum[s],
+      netRate: (1000 * (inSum[s] - outSum[s])) / popSum[s],
+    });
+  }
+  return rows;
+}
+
+function renderPerCapitaPanel(filters) {
+  const metric = filters.percap;
+  const rateKey = { net: "netRate", in: "inRate", out: "outRate" }[metric];
+  const rows = stateRates(filters).sort((a, b) => b[rateKey] - a[rateKey]);
+  const period = filters.year === "all" ? `annual average, ${data.meta.years[0]}–${data.meta.years.at(-1)}` : filters.year;
+  document.getElementById("percap-title").textContent = `${PERCAP_TITLES[metric]} (${period})`;
+  const entries = rows.map((r) => [r.state, r[rateKey]]);
+  const shown = metric === "net" ? [...entries.slice(0, 8), ...entries.slice(-8)] : entries.slice(0, 12);
+  charts.percap = rankedBarChart(document.getElementById("chart-percap"), shown, {
+    diverging: metric === "net",
+    formatValue: (v) => v.toFixed(1) + " per 1,000",
+    onBarClick: (name) => store.set(metric === "out" ? { prior_state: name } : { current_state: name }),
+  });
+  const perThousand = (v) => v.toFixed(1);
+  renderTable(
+    document.getElementById("table-percap"),
+    [
+      { label: "State", key: "state" },
+      { label: "Population", key: "population", format: (v) => fmt.format(v) },
+      { label: "Moved in", key: "inMovers", format: (v) => fmt.format(v) },
+      { label: "Moved out", key: "outMovers", format: (v) => fmt.format(v) },
+      { label: "Net", key: "net", format: (v) => fmt.format(v) },
+      { label: "In per 1,000", key: "inRate", format: perThousand },
+      { label: "Out per 1,000", key: "outRate", format: perThousand },
+      { label: "Net per 1,000", key: "netRate", format: perThousand },
+    ],
+    rows,
+    { initialSortKey: rateKey, onRowClick: (row) => store.set(metric === "out" ? { prior_state: row.state } : { current_state: row.state }) }
+  );
+  showEmptyState("percap", rows.length === 0);
+}
+
+// ---- panel: cost of living and affordability, by state ----
+
+const COST_METRICS = {
+  home_value: { title: "Home value", money: true, format: (v) => fmtMoney.format(v) },
+  price_income: { title: "Home value ÷ median household income", format: (v) => v.toFixed(2) },
+  rpp_all: { title: "Regional price level, all items (U.S. = 100)", format: (v) => v.toFixed(1), from: "2008" },
+  rpp_housing: { title: "Regional price level, housing (U.S. = 100)", format: (v) => v.toFixed(1), from: "2008" },
+  payment: { title: "Monthly mortgage payment (principal + interest)", money: true, format: (v) => fmtMoney.format(v) },
+  payment_share: { title: "Mortgage payment as a share of median household income", format: (v) => v.toFixed(1) + "%" },
+  rent: { title: "Typical rent (average of the state's metro areas)", money: true, format: (v) => fmtMoney.format(v), from: "2015" },
+  income: { title: "Median household income", money: true, format: (v) => fmtMoney.format(v) },
+};
+
+function costValue(metric, s, y) {
+  const ctx = data.context;
+  const f = COST_METRICS[metric].money && dollarsReal ? ctx.realFactor(y) : 1;
+  const zhvi = zhviLookup.get(s)?.get(y) ?? NaN;
+  switch (metric) {
+    case "home_value": return zhvi * f;
+    case "price_income": return zhvi / ctx.income(s, y);
+    case "rpp_all": return ctx.rppAll(s, y);
+    case "rpp_housing": return ctx.rppHousing(s, y);
+    case "payment": return monthlyPayment(zhvi, ctx.mortgageRate(y)) * f;
+    case "payment_share": return ((monthlyPayment(zhvi, ctx.mortgageRate(y)) * 12) / ctx.income(s, y)) * 100;
+    case "rent": return ctx.rent(s, y) * f;
+    case "income": return ctx.income(s, y) * f;
+    default: return NaN;
+  }
+}
+
+function renderCostPanel(filters) {
+  const metric = filters.costmetric;
+  const info = COST_METRICS[metric];
+  const year = filters.year === "all" ? data.context.latest : Number(filters.year);
+  const dollarNote = info.money && dollarsReal ? ", 2024 dollars" : "";
+  document.getElementById("cost-title").textContent = `${info.title}, ${year}${dollarNote}`;
+  const entries = data.states
+    .map((name, s) => [name, costValue(metric, s, year)])
+    .filter(([, v]) => Number.isFinite(v))
+    .sort((a, b) => b[1] - a[1]);
+  const sparse = entries.length < 5;
+  document.getElementById("cost-subtitle").textContent = sparse
+    ? `This series is not available for ${year}${info.from ? ` (it starts in ${info.from})` : ""}. Pick a later year.`
+    : filters.year === "all"
+      ? `Highest and lowest ten states, latest year (${year}). Choose a year above to see another.`
+      : "Highest and lowest ten states.";
+  const shown = entries.length > 20 ? [...entries.slice(0, 10), ...entries.slice(-10)] : entries;
+  charts.cost = rankedBarChart(document.getElementById("chart-cost"), shown.length ? shown : [["", 0]], {
+    formatValue: info.format,
+    onBarClick: (name) => store.set({ current_state: name }),
+  });
+  renderTable(
+    document.getElementById("table-cost"),
+    [
+      { label: "State", key: "state" },
+      { label: info.title, key: "value", format: info.format },
+    ],
+    entries.map(([state, value]) => ({ state, value })),
+    { onRowClick: (row) => store.set({ current_state: row.state }) }
+  );
+  showEmptyState("cost", sparse);
+}
+
 // ---- top-level render ----
 
 function render() {
@@ -637,6 +829,8 @@ function render() {
   const indices = maskIndices(mask);
 
   document.getElementById("selection-count").textContent = `${fmt.format(indices.length)} of ${fmt.format(data.length)} records selected`;
+  dollarsReal = filters.dollars === "real";
+  syncControls(filters);
   renderActiveFilters(filters);
   renderKpis(indices, filters);
   renderMapPanel(indices, filters);
@@ -645,6 +839,26 @@ function render() {
   renderRoutesPanel(indices);
   renderHistogramPanel(indices);
   renderScatterPanel(indices, document.getElementById("scatter-refline").checked);
+  renderPerCapitaPanel(filters);
+  renderCostPanel(filters);
+}
+
+/** Keeps every control that lives in the store (selects, segmented buttons, dollar labels) in step with it. */
+function syncControls(filters) {
+  for (const [id, key] of [
+    ["main-measure", "measure"],
+    ["main-breakdown", "breakdown"],
+    ["main-chart-type", "charttype"],
+    ["percap-metric", "percap"],
+    ["cost-metric", "costmetric"],
+  ]) {
+    syncSelect(id, filters[key]);
+  }
+  document.querySelectorAll("#filter-dollars button").forEach((btn) => btn.classList.toggle("is-on", btn.dataset.value === filters.dollars));
+  document.querySelectorAll("[data-dollar-label]").forEach((el) => {
+    if (!el.dataset.base) el.dataset.base = el.textContent;
+    el.textContent = moneyLabel(el.dataset.base);
+  });
 }
 
 // ---- bootstrap ----
@@ -670,6 +884,15 @@ async function main() {
   [data, geo] = await Promise.all([loadDataset(), loadGeoData()]);
   store = createFilterStore(readStateFromUrl());
   applyIcons();
+
+  // one ZHVI value per (state, year), taken from any row where the state is the destination
+  zhviLookup = new Map();
+  for (let i = 0; i < data.length; i++) {
+    if (Number.isNaN(data.currentZhvi[i])) continue;
+    const s = data.currentState[i];
+    if (!zhviLookup.has(s)) zhviLookup.set(s, new Map());
+    zhviLookup.get(s).set(data.year[i], data.currentZhvi[i]);
+  }
 
   populateSelect(document.getElementById("filter-year"), data.meta.years, store.get().year);
   populateSelect(document.getElementById("filter-current-state"), data.states, store.get().current_state);
@@ -698,6 +921,11 @@ async function main() {
   document.getElementById("main-measure").value = store.get().measure;
   document.getElementById("main-breakdown").value = store.get().breakdown;
   document.getElementById("main-chart-type").value = store.get().charttype;
+  document.getElementById("percap-metric").value = store.get().percap;
+  document.getElementById("cost-metric").value = store.get().costmetric;
+  document.getElementById("percap-metric").addEventListener("change", (e) => store.set({ percap: e.target.value }));
+  document.getElementById("cost-metric").addEventListener("change", (e) => store.set({ costmetric: e.target.value }));
+  document.querySelectorAll("#filter-dollars button").forEach((btn) => btn.addEventListener("click", () => store.set({ dollars: btn.dataset.value })));
   document.getElementById("main-measure").addEventListener("change", (e) => store.set({ measure: e.target.value }));
   document.getElementById("main-breakdown").addEventListener("change", (e) => store.set({ breakdown: e.target.value }));
   document.getElementById("main-chart-type").addEventListener("change", (e) => store.set({ charttype: e.target.value }));
@@ -713,6 +941,8 @@ async function main() {
   wirePanelToolbar("histogram");
   wirePanelToolbar("scatter");
   wirePanelToolbar("map");
+  wirePanelToolbar("percap");
+  wirePanelToolbar("cost");
 
   populateSelect(document.getElementById("plan-from"), data.states, "");
   populateSelect(document.getElementById("plan-to"), data.states, "");

@@ -596,11 +596,17 @@ select {
 }
 .panel-head {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: start;
   gap: var(--space-2);
   margin-bottom: var(--space-2);
 }
+.panel-head > div:first-child {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.panel-head select { max-width: 100%; min-width: 0; }
 .panel-title {
   font-weight: 600;
   font-size: 0.95rem;
@@ -849,6 +855,9 @@ table.data-table th {
   color: var(--color-accent);
   margin-bottom: 4px;
 }
+
+/* author display rules beat the UA [hidden] rule, so spell it out */
+.empty-state[hidden] { display: none; }
 
 /* moving-box empty state icon */
 .empty-state {

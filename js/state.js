@@ -11,7 +11,7 @@ export const RELIABLE_MAX_MOE_SHARE = 0.3;
 export const isReliable = (movers, moe) => moe <= RELIABLE_MAX_MOE_SHARE * movers;
 
 export const FILTER_KEYS = ["year", "current_state", "prior_state", "current_region", "reliable"];
-export const CONTROL_KEYS = ["measure", "breakdown", "charttype"];
+export const CONTROL_KEYS = ["measure", "breakdown", "charttype", "dollars", "percap", "costmetric"];
 export const ALL_KEYS = [...FILTER_KEYS, ...CONTROL_KEYS];
 
 export const DEFAULTS = Object.freeze({
@@ -23,6 +23,9 @@ export const DEFAULTS = Object.freeze({
   measure: "total",
   breakdown: "current_state",
   charttype: "bar",
+  dollars: "nominal", // "real" restates every dollar amount in 2024 dollars
+  percap: "net", // per-1,000-residents panel: net | in | out
+  costmetric: "home_value", // cost-of-living panel metric
 });
 
 /** Reads state from the current URL's query string, falling back to defaults. */

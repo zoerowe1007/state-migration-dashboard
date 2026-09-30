@@ -1,6 +1,8 @@
 // Loads data/site_data.json once and exposes it as typed arrays for fast,
 // in-memory filtering (no re-fetching, no re-parsing on every filter change).
 
+import { buildContext } from "./context.js";
+
 const DATA_URL = "data/site_data.json";
 
 /**
@@ -18,6 +20,7 @@ const DATA_URL = "data/site_data.json";
  * @property {Float32Array} currentZhvi NaN where missing
  * @property {Float32Array} priorZhvi   NaN where missing
  * @property {number} length
+ * @property {ReturnType<typeof buildContext>} context  population, income, price parities, rent, CPI, mortgage rates
  */
 
 /** @returns {Promise<Dataset>} */
@@ -48,5 +51,6 @@ export async function loadDataset() {
     currentZhvi: toTypedNullable(rows.current_zhvi, Float32Array),
     priorZhvi: toTypedNullable(rows.prior_zhvi, Float32Array),
     length: n,
+    context: buildContext(raw.context, raw.lookups.states),
   };
 }
