@@ -184,7 +184,18 @@ async function main() {
   const [accent] = seriesColors();
   lineChart(document.getElementById("headline-chart"), gapSeries, { color: accent, formatValue: (v) => fmtMoney.format(Math.round(v)), labelEnds: true });
 
+  // Headline numbers block
   const trend = nationalTrend(data);
+  const flows = topFlows(data, LATEST, 6);
+  const cheaperShare = cheaperShareByYear(data);
+  const totalMovers = trend.reduce((sum, [, v]) => sum + v, 0);
+  document.querySelectorAll(".stat-year").forEach((el) => (el.textContent = String(LATEST)));
+  document.getElementById("stat-route-name").textContent = flows[0][0].replace(" → ", " \u2192 ");
+  countUpOnVisible(document.getElementById("stat-total"), totalMovers, (v) => fmt.format(Math.round(v)));
+  countUpOnVisible(document.getElementById("stat-latest"), trend[trend.length - 1][1], (v) => fmt.format(Math.round(v)));
+  countUpOnVisible(document.getElementById("stat-cheaper"), cheaperShare[cheaperShare.length - 1][1], (v) => v.toFixed(1) + "%");
+  countUpOnVisible(document.getElementById("stat-route"), flows[0][1], (v) => fmt.format(Math.round(v)));
+
   renderHeroPattern(document.getElementById("hero-pattern"), trend);
 
   // 1. National trend
@@ -208,11 +219,9 @@ async function main() {
   rankedBarChart(document.getElementById("chart-gainers-losers"), [...top5, ...bottom5], { diverging: true });
 
   // 4. Busiest routes, latest year
-  const flows = topFlows(data, LATEST, 6);
   rankedBarChart(document.getElementById("chart-top-flows"), flows);
 
   // 5. Cheaper-share trend
-  const cheaperShare = cheaperShareByYear(data);
   lineChart(document.getElementById("chart-cheaper-share"), cheaperShare, { color: accent, formatValue: (v) => v.toFixed(1) + "%" });
 
   // 6. Cost gap trend

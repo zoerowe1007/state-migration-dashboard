@@ -32,9 +32,13 @@
       <div>
         <h1>Where Americans move, and what it costs</h1>
         <p class="intro">
-          Every year the Census Bureau asks a few million people where they lived a year ago. This report
-          follows those movers across two decades of state-to-state migration data, paired with Zillow's
-          home value index for every state they left and every state they landed in.
+          This report covers 50,066 state-to-state migration records from the Census Bureau's American
+          Community Survey (2005&ndash;2024, no 2020 release), paired with Zillow's home value index for
+          every state people left and every state they landed in. About 7.5 million Americans move
+          between states each year, and the flow is lopsided: the South gains people while the Northeast,
+          Midwest and, since 2021, the West lose them. California to Texas is the busiest route, and most
+          movers land in a state with cheaper homes than the one they left, a gap that widened sharply
+          after 2019.
         </p>
         <p class="byline">Prepared by Zoe Rowe for Financial Data Analytics</p>
         <a class="read-link" href="#report">Read the report &darr;</a>
@@ -49,6 +53,29 @@
       </div>
     </div>
   </header>
+
+  <section class="wrap headline-stats" aria-label="Headline numbers">
+    <div class="card stat-card">
+      <p class="kpi-label">Total interstate movers, 2005&ndash;2024</p>
+      <span class="kpi-value" id="stat-total" data-countup>&ndash;</span>
+      <p class="stat-note">Sum of every state-to-state estimate across 19 survey years</p>
+    </div>
+    <div class="card stat-card">
+      <p class="kpi-label">Interstate movers in <span class="stat-year">2024</span></p>
+      <span class="kpi-value" id="stat-latest" data-countup>&ndash;</span>
+      <p class="stat-note">14% below the 2022 peak of 8.30 million</p>
+    </div>
+    <div class="card stat-card">
+      <p class="kpi-label">Movers who moved to a cheaper state, <span class="stat-year">2024</span></p>
+      <span class="kpi-value" id="stat-cheaper" data-countup>&ndash;</span>
+      <p class="stat-note">Destination home value index below the origin's</p>
+    </div>
+    <div class="card stat-card">
+      <p class="kpi-label">Busiest route, <span class="stat-year">2024</span>: <span id="stat-route-name">&ndash;</span></p>
+      <span class="kpi-value" id="stat-route" data-countup>&ndash;</span>
+      <p class="stat-note">People who moved that way in one year</p>
+    </div>
+  </section>
 
   <main class="wrap" id="report">
     <section class="report-section">
@@ -88,13 +115,13 @@
       <p class="stop-label">Stop 3</p>
       <h2><span class="num">3</span> Florida and Texas are the biggest winners; California and New York the biggest losers</h2>
       <p>
-        Averaged over the five most recent years, <strong>Florida gained a net 665,000 people</strong> and
-        <strong>Texas gained 532,000</strong>. On the other side, <strong>California lost a net 1.27 million
-        people</strong> and <strong>New York lost 840,000</strong> &mdash; roughly double what any other
-        state lost.
+        Totaled over 2020&ndash;2024 (four survey years, since 2020 has no data),
+        <strong>Florida gained a net 665,000 people</strong> and <strong>Texas gained 532,000</strong>. On the
+        other side, <strong>California lost a net 1.27 million people</strong> and <strong>New York lost
+        840,000</strong>; the two losses are by far the largest, and third-place Illinois lost 438,000.
       </p>
       <div class="card chart-card">
-        <div class="chart-title">Net migration, 5-year average</div>
+        <div class="chart-title">Net migration, total 2020&ndash;2024</div>
         <div id="chart-gainers-losers" style="height: 340px;"></div>
       </div>
     </section>
@@ -105,7 +132,7 @@
       <h2><span class="num">4</span> California to Texas is the single busiest route in the country</h2>
       <p>
         In 2024, an estimated <strong>77,161 people moved from California to Texas</strong> &mdash; the
-        largest flow between any two states, and nearly 30,000 more than the reverse trip.
+        largest flow between any two states, and about 31,700 more than the 45,447 who went the other way.
       </p>
       <div class="card chart-card">
         <div class="chart-title">Busiest state-to-state routes, 2024</div>
@@ -131,11 +158,12 @@
     <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
       <p class="stop-label">Stop 6</p>
-      <h2><span class="num">6</span> The price gap between origin and destination has nearly doubled since 2019</h2>
+      <h2><span class="num">6</span> The price gap between origin and destination has widened by two-thirds since 2019</h2>
       <p>
-        The movers-weighted home-value gap was <strong>&minus;$10,895 in 2019</strong>. By 2021 it had
-        jumped to <strong>&minus;$24,899</strong> as remote work let people leave expensive coastal metros
-        for good, and it remains a wide <strong>&minus;$18,321 in 2024</strong>.
+        The movers-weighted home-value gap (destination minus origin) was <strong>&minus;$10,895 in
+        2019</strong>. By 2021 it had more than doubled to <strong>&minus;$24,899</strong> as remote work
+        spread, and at <strong>&minus;$18,321 in 2024</strong> it is
+        still 68% wider than before the pandemic.
       </p>
       <div class="card chart-card">
         <div class="chart-title">Movers-weighted home value gap (destination &minus; origin)</div>
@@ -146,15 +174,16 @@
     <div class="road-divider" aria-hidden="true"></div>
     <section class="report-section">
       <p class="stop-label">Stop 7</p>
-      <h2><span class="num">7</span> Home values surged hardest in the same states that are gaining people</h2>
+      <h2><span class="num">7</span> All eight fastest-rising housing markets gained people; six of the eight slowest lost them</h2>
       <p>
         Since 2005, home values are up <strong>191% in Idaho</strong>, <strong>178% in Utah</strong>, and
-        <strong>174% in Montana</strong> &mdash; three of the biggest net-migration winners on record. At
-        the other end, <strong>Illinois (+37%)</strong> and <strong>Nevada (+41%)</strong> had the slowest
-        price growth of any state with usable data.
+        <strong>174% in Montana</strong>, and all three (along with the other five states in the top eight)
+        gained more people than they lost over the period. At the other end, <strong>Illinois (+37%)</strong>
+        and <strong>Nevada (+41%)</strong> had the slowest price growth of any state with usable data; Illinois
+        lost 1.8 million people net, though Nevada gained 446,000.
       </p>
       <div class="card chart-card">
-        <div class="chart-title">Home value change, 2005 to latest year (highest and lowest 8 states)</div>
+        <div class="chart-title">Home value change in percent, 2005 to 2024 (highest and lowest 8 states)</div>
         <div id="chart-home-value-change" style="height: 380px;"></div>
       </div>
     </section>
@@ -166,7 +195,7 @@
       <p>
         Hurricane Maria made landfall in September 2017. In the 2018 survey year that followed,
         <strong>133,451 people left Puerto Rico for the mainland</strong> &mdash; up <strong>37% from
-        97,488 the year before</strong>, and the highest outflow anywhere in the record.
+        97,488 the year before</strong>, and the highest Puerto Rico outflow in any of the 19 years of data.
       </p>
       <div class="card chart-card">
         <div class="chart-title">People who left Puerto Rico for a U.S. state, by year</div>
@@ -174,14 +203,64 @@
       </div>
     </section>
 
+    <section class="about-section" id="about-data" aria-labelledby="about-heading">
+      <p class="stop-label">Notes</p>
+      <h2 id="about-heading">About the data</h2>
+      <p class="lede">
+        Every number above comes from one table, <code>data/processed/state_migration_cost_panel.csv</code>,
+        built from two public sources by <code>data/prepare_data.py</code>. The checks in
+        <code>data/validate.py</code> recompute each figure quoted in this report from that file.
+      </p>
+      <div class="about-grid">
+        <div class="card about-card">
+          <h3>Where the data comes from</h3>
+          <ul>
+            <li><strong>Migration:</strong> U.S. Census Bureau, <a href="https://www.census.gov/data/tables/time-series/demo/geographic-mobility/state-to-state-migration.html">State-to-State Migration Flows</a>, American Community Survey 1-year estimates, 2005&ndash;2024. The Census Bureau released no 1-year estimates for 2020, so that year is missing: 19 survey years, and charts connect 2019 straight to 2021.</li>
+            <li><strong>Home values:</strong> <a href="https://www.zillow.com/research/data/">Zillow Home Value Index</a> (ZHVI), state level, all homes, smoothed and seasonally adjusted, monthly. I average the twelve months of each calendar year to get one value per state per year.</li>
+          </ul>
+        </div>
+        <div class="card about-card">
+          <h3>What one row is</h3>
+          <p>One row is one <strong>origin state &rarr; destination state &rarr; survey year</strong>: the estimated number of people (<code>movers</code>) who lived in <code>prior_state</code> a year before the survey and in <code>current_state</code> when surveyed, with its 90% margin of error (<code>moe</code>), both states' Census regions, and both states' home value index that year.</p>
+          <p>The table has <strong>50,066 rows</strong>, 9 columns, 19 years and 52 places (50 states, D.C., Puerto Rico).</p>
+        </div>
+        <div class="card about-card">
+          <h3>Rows I drop or leave out, and why</h3>
+          <ul>
+            <li><strong>Same-state rows</strong> (people who moved within a state): this report is about moves <em>between</em> states.</li>
+            <li><strong>Suppressed or not-applicable cells</strong> (marked N or X in the Census tables): they have no estimate to report.</li>
+            <li><strong>Non-state rows</strong> (such as national and regional totals): they would double-count the state rows.</li>
+            <li><strong>Missing home values:</strong> Zillow publishes no state index for Puerto Rico, and none for North Dakota before 2009. Those 2,313 rows (4.6%) stay in every migration count but are left out of every home-value figure.</li>
+          </ul>
+        </div>
+        <div class="card about-card">
+          <h3>How each number is computed</h3>
+          <ul>
+            <li><strong>Total movers</strong> = sum of <code>movers</code>. The yearly average is that total divided by 19 survey years.</li>
+            <li><strong>Net migration</strong> of a state or region = movers arriving minus movers leaving, summed over the years shown. Regional charts cover the four Census regions, so they leave out Puerto Rico.</li>
+            <li><strong>Total over 2020&ndash;2024</strong> (Stop 3) is a sum over the four survey years in that window, not a per-year average.</li>
+            <li><strong>Share moving to a cheaper state</strong> = movers whose destination index is below their origin's &divide; all movers with both indexes, &times; 100.</li>
+            <li><strong>Home value gap</strong> = destination index &minus; origin index. The <strong>movers-weighted</strong> gap is &Sigma;(gap &times; movers) &divide; &Sigma;(movers), so a route with more movers counts for more.</li>
+            <li><strong>Home value change</strong> = (2024 index &minus; 2005 index) &divide; 2005 index, &times; 100, per state.</li>
+            <li><strong>Median destination home value</strong> (dashboard) is the median over records in view; each record counts once, whatever its mover count.</li>
+          </ul>
+        </div>
+        <div class="card about-card is-wide">
+          <h3>Caveats</h3>
+          <p>These are survey estimates, not a census of moves. Each flow carries a margin of error, and small flows are noisy, so read differences of a few thousand movers on a single route with care. Home values are state averages and say nothing about the neighborhoods people actually move between. This report shows association, not cause.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="cta-row">
-      <a class="btn btn-primary" href="dashboard.html" style="font-size: 1rem; padding: var(--space-3) var(--space-6);"><span class="btn-icon" data-icon="truck"></span> Open the dashboard &rarr;</a>
+      <a class="btn btn-primary" href="dashboard.html" style="font-size: 1rem; padding: var(--space-3) var(--space-6);"><span class="btn-icon" data-icon="truck" aria-hidden="true"></span> Open the dashboard &rarr;</a>
     </section>
   </main>
 
   <footer style="border-top: 1px solid var(--color-border); padding: var(--space-5) 0 var(--space-7); color: var(--color-text-secondary); font-size: 0.85rem;">
     <div class="wrap">
       Data: U.S. Census Bureau (ACS State-to-State Migration Flows) &amp; Zillow Research (ZHVI).
+      <a href="#about-data">How it was built</a> &middot; <a href="https://github.com/zoerowe1007/state-migration-dashboard">Source on GitHub</a>
     </div>
   </footer>
 
